@@ -1,32 +1,32 @@
 import Project from '.'
+import { ensureFnDir } from '../lib/utils'
 import { Language, Problem } from '../types'
 import BaseProject from './BaseProject'
 
-const TARGET = 'node16.13.2'
-
-export default class TypeScript extends BaseProject implements Project {
+export default class Python extends BaseProject implements Project {
   constructor(rootDir: string, libDir: string, contestId: string, problemId: string) {
-    super(rootDir, libDir, contestId, problemId, Language.TypeScript)
+    super(rootDir, libDir, contestId, problemId, Language.Python)
   }
 
   protected getCodeTemplate(problem: Problem): string {
-    return `/*
+    return `'''
 ${problem.content}
-*/
+'''
 
-export ${problem.templates['typescript']}
+${problem.templates['python']}
 `
   }
 
   protected getBuiltBaseFn(): string {
-    return 'solution.js'
+    return 'solution.py'
   }
 
   protected getBuildCmd(srcFn: string, outFn: string): string {
-    return `esbuild ${srcFn} --bundle --minify-syntax --platform=node --target=${TARGET} --outfile=${outFn}`
+    ensureFnDir(outFn)
+    return `cp ${srcFn} ${outFn}`
   }
 
   getSubmitLanguage(): string {
-    return 'javascript'
+    return 'python'
   }
 }

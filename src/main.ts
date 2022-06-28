@@ -8,6 +8,7 @@ import CookieJar from './lib/CookieJar'
 import Client from './lib/lcClient'
 import { runCmd, writeStringToFile } from './lib/utils'
 import Project from './project'
+import Python from './project/Python'
 import TypeScript from './project/TypeScript'
 
 const rootDir = 'contests'
@@ -16,8 +17,25 @@ const config = Config.load()
 const jar = CookieJar.load()
 const client = new Client(config, jar)
 
+async function chooseLanguage() {
+  const questions: any[] = [
+    {
+      type: 'select',
+      name: 'language',
+      message: 'Choose a language',
+      choices: [
+        { title: 'TypeScript', value: 'typescript' },
+        { title: 'Python', value: 'python' }
+      ]
+    }
+  ]
+  const resp = await prompts(questions)
+  config.language = resp.language
+}
+
 function getProject(lang: string, contestId: string, problemId: string): Project {
   if (lang === 'typescript') return new TypeScript(rootDir, libDir, contestId, problemId)
+  if (lang === 'python') return new Python(rootDir, libDir, contestId, problemId)
   throw new Error(`Unsupported language: ${lang}`)
 }
 
@@ -73,21 +91,6 @@ async function ensureCookies() {
   if (jar.hasCookies()) return
 
   await client.login()
-}
-
-async function chooseLanguage() {
-  const questions: any[] = [
-    {
-      type: 'select',
-      name: 'language',
-      message: 'Choose a language',
-      choices: [
-        { title: 'TypeScript', value: 'typescript' }
-      ]
-    }
-  ]
-  const resp = await prompts(questions)
-  config.language = resp.language
 }
 
 async function ensureContestId() {

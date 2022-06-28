@@ -9,4 +9,5 @@ export default interface Project {
   getBuiltFn(): string
   newSolution(problem: Problem): void
   build(): Promise<void>
+  getSubmitLanguage(): string
 }

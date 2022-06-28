@@ -6,8 +6,12 @@ function ensureDir(dir: string) {
   fs.mkdirSync(dir, { recursive: true })
 }
 
-export function writeStringToFile(fn: string, content: string) {
+export function ensureFnDir(fn: string) {
   ensureDir(path.dirname(fn))
+}
+
+export function writeStringToFile(fn: string, content: string) {
+  ensureFnDir(fn)
   fs.writeFileSync(fn, content, 'utf-8')
 }
 

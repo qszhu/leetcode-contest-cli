@@ -107,7 +107,7 @@ export default class Client {
     const data = {
       question_id: rawId,
       data_input: input,
-      lang: 'javascript',
+      lang: project.getSubmitLanguage(),
       typed_code: src,
       test_mode: false,
       judge_type: 'large'
@@ -177,7 +177,7 @@ export default class Client {
     const src = fs.readFileSync(project.getBuiltFn(), 'utf-8')
     const data = {
       question_id: rawId,
-      lang: 'javascript',
+      lang: project.getSubmitLanguage(),
       typed_code: src,
       test_mode: false,
       judge_type: 'large'

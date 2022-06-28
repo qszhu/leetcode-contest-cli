@@ -8,7 +8,7 @@
 ```bash
 $ npm i -g esbuild
 ```
-* Python (TODO)
+* Python
 * C++ (TODO)
 * Kotlin (TODO)
 * Go (TODO)
@@ -52,10 +52,11 @@ $ lcc
 ✔ Contest URL: … https://leetcode.cn/contest/weekly-contest-298/
 ? Choose a language › - Use arrow-keys. Return to submit.
 ❯   TypeScript
+    Python
 ```
 
 ## Login
-Before doint this, make sure you have already registered for the contest or have started a virtual contest.
+Before doing this, make sure you have already registered for the contest or have started a virtual contest.
 
 Login in the opened browser window.
 
@@ -155,6 +156,7 @@ $ lcc https://leetcode.cn/contest/biweekly-contest-81/
 $ lcc lang
 ? Choose a language › - Use arrow-keys. Return to submit.
 ❯   TypeScript
+    Python
 ```
 
 # Troubleshooting
