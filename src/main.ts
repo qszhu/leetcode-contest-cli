@@ -56,10 +56,12 @@ async function listProblems() {
   if (!resp.problemId) return
   config.problemId = resp.problemId
 
-  const problem = await client.readProblem(config.contestId, config.problemId)
-
   const proj = getProject(config.language, config.contestId, config.problemId)
-  proj.newSolution(problem)
+  if (!proj.hasSolution()) {
+    const problem = await client.readProblem(config.contestId, config.problemId)
+    proj.newSolution(problem)
+  }
+
   await runCmd(`code ${proj.getScreenshotFn()}`)
   await runCmd(`code ${proj.getSourceFn()}`)
 }

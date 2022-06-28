@@ -46,10 +46,13 @@ export default abstract class BaseProject {
 
   protected abstract getCodeTemplate(problem: Problem): string
 
+  hasSolution() {
+    return fs.existsSync(this.getSourceFn())
+  }
+
   newSolution(problem: Problem) {
-    const fn = this.getSourceFn()
-    if (!fs.existsSync(fn)) {
-      writeStringToFile(fn, this.getCodeTemplate(problem))
+    if (!this.hasSolution()) {
+      writeStringToFile(this.getSourceFn(), this.getCodeTemplate(problem))
       this.linkLibDir()
     }
     writeStringToFile(this.getIdFn(), problem.rawId)

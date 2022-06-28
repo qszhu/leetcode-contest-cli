@@ -7,6 +7,7 @@ export default interface Project {
   getScreenshotFn(): string
   getSourceFn(): string
   getBuiltFn(): string
+  hasSolution(): boolean
   newSolution(problem: Problem): void
   build(): Promise<void>
   getSubmitLanguage(): string
