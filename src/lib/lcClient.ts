@@ -125,13 +125,20 @@ export default class Client {
     const { data: { interpret_id } } = await axios.request(opts)
     const res: any = await this.waitResult(interpret_id, contestId, problemId)
 
-    const { code_answer, code_output } = res
+    const { status_msg, code_answer, code_output, full_runtime_error } = res
+    console.log(status_msg)
+
+    if (full_runtime_error) {
+      console.log(full_runtime_error.split('\n').reverse().join('\n'))
+      return
+    }
 
     const codeOutput = code_output.join('\n')
     if (codeOutput) {
       console.log('Code output:')
       console.log(codeOutput)
     }
+
     const actualOutput = code_answer.join('\n')
     if (actualOutput === output) {
       console.log('SUCCESS')
@@ -195,8 +202,14 @@ export default class Client {
     const { data: { submission_id } } = await axios.request(opts)
     const res: any = await this.waitResult(submission_id, contestId, problemId)
 
-    const { status_msg } = res
+    const { status_msg, full_runtime_error } = res
     console.log(status_msg)
+
+    if (full_runtime_error) {
+      console.log(full_runtime_error.split('\n').reverse().join('\n'))
+      return
+    }
+
     if (status_msg === 'Accepted') {
       const { status_runtime, status_memory } = res
       console.log('runtime:', status_runtime)
