@@ -1,9 +1,11 @@
-# Requirements
+# CLI for LeetCode Contests
+
+## Requirements
 * Node.js v14+
 * Google Chrome
 * (Optional) Visual Studio Code
 
-## Requirements for Specific Language
+### Requirements for Specific Language
 * TypeScript
 ```bash
 $ npm i -g esbuild
@@ -14,7 +16,7 @@ $ npm i -g esbuild
 * Go (TODO)
 * Rust (TODO)
 
-# Install
+## Install
 ```bash
 $ npm i -g leetcode-contest-cli
 $ mkdir mySolutions
@@ -22,14 +24,14 @@ $ cd mySolutions
 $ lcc init
 ```
 
-# First run
+## First run
 
-## Google Chrome Executable Path
+### Google Chrome Executable Path
 ```bash
 $ lcc
 ? Google Chrome executable path: › 
 ```
-### Where to find Chrome
+#### Where to find Chrome
 
 Type `chrome://version/` in the address bar.
 
@@ -38,14 +40,14 @@ Typical values:
 * Windows: `C:\Program Files (x86)\Google\Chrome\Application`
 * Linux: `/usr/bin/google-chrome-stable`
 
-## Contest URL
+### Contest URL
 ```bash
 $ lcc
 ✔ Google Chrome executable path: … /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
 ? Contest URL: › 
 ```
 
-## Preferred Language
+### Preferred Language
 ```bash
 $ lcc
 ✔ Google Chrome executable path: … /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
@@ -56,14 +58,14 @@ $ lcc
     C++
 ```
 
-## Login
+### Login
 Before doing this, make sure you have already registered for the contest or have started a virtual contest.
 
 Login in the opened browser window.
 
-# Solving Problems
+## Solving Problems
 
-## Choosing a Problem
+### Choosing a Problem
 ```bash
 $ lcc list
 ? Choose a problem › - Use arrow-keys. Return to submit.
@@ -73,7 +75,7 @@ $ lcc list
     卖木头块
 ```
 
-## Project Structure
+### Project Structure
 ```
 exa --tree
 .
@@ -97,7 +99,7 @@ exa --tree
 * `solution.*`: Edit your solution here.
 * `lib`: Put your code snippets here to be imported by your solution.
 
-## Build Solution
+### Build Solution
 ```bash
 $ lcc build
 
@@ -106,7 +108,7 @@ $ lcc build
 ⚡ Done in 9ms
 ```
 
-## Test Solution
+### Test Solution
 ```bash
 $ lcc test
 STARTED
@@ -131,7 +133,7 @@ PENDING
 SUCCESS
 ```
 
-## Submit Solution
+### Submit Solution
 ```bash
 $ lcc submit
 STARTED
@@ -140,9 +142,9 @@ runtime: 64 ms
 memory: 43.1 MB
 ```
 
-# Other Options
+## Other Options
 
-## Start Another Contest
+### Start Another Contest
 ```bash
 $ lcc https://leetcode.cn/contest/biweekly-contest-81/
 ? Choose a problem › - Use arrow-keys. Return to submit.
@@ -152,7 +154,7 @@ $ lcc https://leetcode.cn/contest/biweekly-contest-81/
     不同骰子序列的数目
 ```
 
-## Use a Different Language
+### Use a Different Language
 ```bash
 $ lcc lang
 ? Choose a language › - Use arrow-keys. Return to submit.
@@ -161,9 +163,9 @@ $ lcc lang
     C++
 ```
 
-# Troubleshooting
+## Troubleshooting
 
-## Session Expired
+### Session Expired
 Your login session may expire if you have logged in another browser window. You can login again if you have encountered errors.
 ```bash
 $ lcc login
