@@ -2,7 +2,7 @@ import { exec, ExecException } from 'child_process'
 import fs from 'fs'
 import path from 'path'
 
-function ensureDir(dir: string) {
+export function ensureDir(dir: string) {
   fs.mkdirSync(dir, { recursive: true })
 }
 

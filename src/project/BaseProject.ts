@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-import { linkFile, runCmd, writeBinaryToFile, writeStringToFile } from '../lib/utils'
+import { ensureDir, linkFile, runCmd, writeBinaryToFile, writeStringToFile } from '../lib/utils'
 import { Language, Problem } from '../types'
 
 export default abstract class BaseProject {
@@ -11,6 +11,7 @@ export default abstract class BaseProject {
   constructor(rootDir: string, libDir: string, contestId: string, problemId: string, private lang: Language) {
     this.rootDir = path.join(rootDir, contestId, problemId)
     this.libDir = path.join(libDir, this.lang)
+    ensureDir(this.libDir)
   }
 
   private getSourceDir() {
