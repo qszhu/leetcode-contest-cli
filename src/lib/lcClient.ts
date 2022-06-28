@@ -1,6 +1,7 @@
 import axios from "axios"
 import fs from 'fs'
 import { convert } from "html-to-text"
+
 import Project from "../project"
 import { Problem } from "../types"
 import Config from "./config"
@@ -25,7 +26,7 @@ export default class Client {
 
     await newPage(url, async page => {
       await page.waitForNavigation({ timeout: 5 * 60 * 1000 })
-      // await page.waitForTimeout(5000)
+
       // save cookies
       this.cookieJar.cookies = await page.cookies()
     }, { executablePath: this.config.chromePath, headless: false })
@@ -52,7 +53,8 @@ export default class Client {
 
     return problems.map(p => {
       const { href, text } = p
-      const id = href.substring(href.indexOf('/problems/') + 10)
+      let id = href.substring(href.indexOf('/problems/') + 10)
+      if (id[id.length - 1] === '/') id = id.substring(0, id.length - 1)
       return { problemId: id, title: text }
     })
   }

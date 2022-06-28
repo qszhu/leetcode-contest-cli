@@ -1,4 +1,4 @@
-import { Problem } from "../types"
+import { Problem } from '../types'
 
 export default interface Project {
   getIdFn(): string

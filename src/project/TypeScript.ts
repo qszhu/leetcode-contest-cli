@@ -1,6 +1,6 @@
-import Project from '.';
-import { Language, Problem } from '../types';
-import BaseProject from './BaseProject';
+import Project from '.'
+import { Language, Problem } from '../types'
+import BaseProject from './BaseProject'
 
 const TARGET = 'node16.13.2'
 

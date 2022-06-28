@@ -2,10 +2,11 @@
 import prompts from 'prompts'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
+
 import Config from './lib/config'
 import CookieJar from './lib/CookieJar'
 import Client from './lib/lcClient'
-import { runCmd } from './lib/utils'
+import { runCmd, writeStringToFile } from './lib/utils'
 import Project from './project'
 import TypeScript from './project/TypeScript'
 
@@ -31,6 +32,7 @@ async function listProblems() {
     }
   ]
   const resp = await prompts(questions)
+  if (!resp.problemId) return
   config.problemId = resp.problemId
 
   const problem = await client.readProblem(config.contestId, config.problemId)
@@ -73,7 +75,7 @@ async function ensureCookies() {
   await client.login()
 }
 
-async function ensureLanguage() {
+async function chooseLanguage() {
   const questions: any[] = [
     {
       type: 'select',
@@ -99,6 +101,13 @@ async function ensureContestId() {
   config.contestId = contestId
 }
 
+async function initCwd() {
+  writeStringToFile('.gitignore', `build/
+.lccrc
+.jar
+`)
+}
+
 async function main() {
   await ensureChromePath()
 
@@ -109,7 +118,7 @@ async function main() {
   if (argv.lang) {
     config.language = String(argv.lang)
   }
-  if (!config.language) await ensureLanguage()
+  if (!config.language) await chooseLanguage()
 
   await ensureCookies()
 
@@ -124,6 +133,10 @@ async function main() {
     await submitSolution()
   } else if (cmd === 'login') {
     await client.login()
+  } else if (cmd === 'init') {
+    await initCwd()
+  } else if (cmd === 'lang') {
+    await chooseLanguage()
   } else {
     await listProblems()
   }

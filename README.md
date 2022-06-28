@@ -17,6 +17,9 @@ $ npm i -g esbuild
 # Install
 ```bash
 $ npm i -g leetcode-contest-cli
+$ mkdir mySolutions
+$ cd mySolutions
+$ lcc init
 ```
 
 # First run
@@ -147,10 +150,11 @@ $ lcc https://leetcode.cn/contest/biweekly-contest-81/
     不同骰子序列的数目
 ```
 
-## Solve a Problem with Different Language
-(TODO)
+## Use a Different Language
 ```bash
 $ lcc lang
+? Choose a language › - Use arrow-keys. Return to submit.
+❯   TypeScript
 ```
 
 # Troubleshooting
