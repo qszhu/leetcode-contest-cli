@@ -10,12 +10,7 @@ export default class TypeScript extends BaseProject implements Project {
   }
 
   protected getCodeTemplate(problem: Problem): string {
-    return `/*
-${problem.content}
-*/
-
-export ${problem.templates['typescript']}
-`
+    return `export ${problem.templates['typescript']}`
   }
 
   protected getBuiltBaseFn(): string {

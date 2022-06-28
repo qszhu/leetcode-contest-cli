@@ -9,12 +9,7 @@ export default class Python extends BaseProject implements Project {
   }
 
   protected getCodeTemplate(problem: Problem): string {
-    return `'''
-${problem.content}
-'''
-
-${problem.templates['python']}
-`
+    return `${problem.templates['python']}`
   }
 
   protected getBuiltBaseFn(): string {

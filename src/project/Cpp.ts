@@ -9,12 +9,7 @@ export default class Cpp extends BaseProject implements Project {
   }
 
   protected getCodeTemplate(problem: Problem): string {
-    return `/*
-${problem.content}
-*/
-
-${problem.templates['cpp']}
-`
+    return `${problem.templates['cpp']}`
   }
 
   protected getBuiltBaseFn(): string {
