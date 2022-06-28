@@ -8,6 +8,7 @@ import CookieJar from './lib/CookieJar'
 import Client from './lib/lcClient'
 import { runCmd, writeStringToFile } from './lib/utils'
 import Project from './project'
+import Cpp from './project/Cpp'
 import Python from './project/Python'
 import TypeScript from './project/TypeScript'
 
@@ -25,7 +26,8 @@ async function chooseLanguage() {
       message: 'Choose a language',
       choices: [
         { title: 'TypeScript', value: 'typescript' },
-        { title: 'Python', value: 'python' }
+        { title: 'Python', value: 'python' },
+        { title: 'C++', value: 'cpp' },
       ]
     }
   ]
@@ -36,6 +38,7 @@ async function chooseLanguage() {
 function getProject(lang: string, contestId: string, problemId: string): Project {
   if (lang === 'typescript') return new TypeScript(rootDir, libDir, contestId, problemId)
   if (lang === 'python') return new Python(rootDir, libDir, contestId, problemId)
+  if (lang === 'cpp') return new Cpp(rootDir, libDir, contestId, problemId)
   throw new Error(`Unsupported language: ${lang}`)
 }
 

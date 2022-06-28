@@ -9,7 +9,7 @@
 $ npm i -g esbuild
 ```
 * Python
-* C++ (TODO)
+* C++
 * Kotlin (TODO)
 * Go (TODO)
 * Rust (TODO)
@@ -53,6 +53,7 @@ $ lcc
 ? Choose a language › - Use arrow-keys. Return to submit.
 ❯   TypeScript
     Python
+    C++
 ```
 
 ## Login
@@ -157,6 +158,7 @@ $ lcc lang
 ? Choose a language › - Use arrow-keys. Return to submit.
 ❯   TypeScript
     Python
+    C++
 ```
 
 # Troubleshooting
