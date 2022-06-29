@@ -198,6 +198,7 @@ async function main() {
 
   if (cmd && cmd.toString().startsWith('http')) {
     config.contestId = cmd.toString().match(/\/contest\/(.*)\//)![1]
+    config.problems = undefined
     await createAll()
     await selectProblem()
   } else if (cmd === 'build') {
