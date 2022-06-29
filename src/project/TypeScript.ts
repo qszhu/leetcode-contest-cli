@@ -1,4 +1,5 @@
 import Project from '.'
+import { runCmd } from '../lib/utils'
 import { Language, Problem } from '../types'
 import BaseProject from './BaseProject'
 
@@ -17,8 +18,15 @@ export default class TypeScript extends BaseProject implements Project {
     return 'solution.js'
   }
 
-  protected getBuildCmd(srcFn: string, outFn: string): string {
-    return `esbuild ${srcFn} --bundle --minify-syntax --platform=node --target=${TARGET} --outfile=${outFn}`
+  async build() {
+    const srcFn = this.getSourceFn()
+    const outFn = this.getBuiltFn()
+    const cmd = `esbuild ${srcFn} --bundle --minify-syntax --platform=node --target=${TARGET} --outfile=${outFn}`
+
+    const { err, stderr } = await runCmd(cmd)
+    if (err) throw new Error(stderr)
+
+    console.error(stderr)
   }
 
   getSubmitLanguage(): string {

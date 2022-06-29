@@ -1,3 +1,5 @@
+import fs from 'fs'
+
 import Project from '.'
 import { ensureFnDir } from '../lib/utils'
 import { Language, Problem } from '../types'
@@ -16,9 +18,11 @@ export default class Python extends BaseProject implements Project {
     return 'solution.py'
   }
 
-  protected getBuildCmd(srcFn: string, outFn: string): string {
+  async build() {
+    const srcFn = this.getSourceFn()
+    const outFn = this.getBuiltFn()
     ensureFnDir(outFn)
-    return `cp ${srcFn} ${outFn}`
+    fs.copyFileSync(srcFn, outFn)
   }
 
   getSubmitLanguage(): string {

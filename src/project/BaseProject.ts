@@ -75,15 +75,4 @@ export default abstract class BaseProject {
   getBuiltFn(): string {
     return path.join(this.getBuildDir(), this.getBuiltBaseFn())
   }
-
-  protected abstract getBuildCmd(srcFn: string, outFn: string): string
-
-  async build() {
-    const cmd = this.getBuildCmd(this.getSourceFn(), this.getBuiltFn())
-
-    const { err, stderr } = await runCmd(cmd)
-    if (err) throw new Error(stderr)
-
-    console.error(stderr)
-  }
 }
