@@ -128,15 +128,15 @@ export default class Client {
     const { status_msg, code_answer, code_output, full_runtime_error } = res
     console.log(status_msg)
 
-    if (full_runtime_error) {
-      console.log(full_runtime_error.split('\n').reverse().join('\n'))
-      return
-    }
-
     const codeOutput = code_output.join('\n')
     if (codeOutput) {
       console.log('Code output:')
       console.log(codeOutput)
+    }
+
+    if (full_runtime_error) {
+      console.log(full_runtime_error.split('\n').reverse().join('\n'))
+      return
     }
 
     const actualOutput = code_answer.join('\n')
