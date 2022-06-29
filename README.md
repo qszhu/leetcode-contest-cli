@@ -102,18 +102,14 @@ exa --tree
 * `solution.*`: Edit your solution here.
 * `lib`: Put your code snippets here to be imported by your solution.
 
-### Build Solution
+### Test Solution
 ```bash
-$ lcc build
+$ lcc test
 
   ...eatest-english-letter-in-upper-and-lower-case/build/ts/solution.js  1.1kb
 
 ⚡ Done in 9ms
-```
 
-### Test Solution
-```bash
-$ lcc test
 STARTED
 expected:
 "E"
@@ -126,7 +122,7 @@ undefined
 ```
 Edit your solution and test again:
 ```bash
-$ lcc build && lcc test
+$ lcc test
 
   ...eatest-english-letter-in-upper-and-lower-case/build/ts/solution.js  1.4kb
 

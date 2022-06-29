@@ -202,9 +202,8 @@ async function main() {
     config.problems = undefined
     await createAll()
     await selectProblem()
-  } else if (cmd === 'build') {
-    await buildSolution()
   } else if (cmd === 'test') {
+    await buildSolution()
     await testSolution()
   } else if (cmd === 'submit') {
     await submitSolution()
