@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 
 const COOKIES_FN = '.jar'
-const KEY_COOKIES = 'cookies'
+export const KEY_COOKIES = 'cookies'
 
 function getCookiesFn() {
   return path.join(process.cwd(), COOKIES_FN)
@@ -25,7 +25,8 @@ export default class CookieJar {
   }
 
   hasCookies() {
-    return this.data[KEY_COOKIES] !== undefined
+    const cookies = this.data[KEY_COOKIES]
+    return cookies && cookies.some((cookie: any) => cookie.name === 'LEETCODE_SESSION')
   }
 
   get cookies() {

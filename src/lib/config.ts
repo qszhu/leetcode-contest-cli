@@ -2,10 +2,11 @@ import fs from 'fs'
 import path from 'path'
 
 const CONFIG_FN = '.lccrc'
-const KEY_CHROME_PATH = 'chromePath'
-const KEY_CONTEST_ID = 'contestId'
-const KEY_PROBLEM_ID = 'problemId'
-const KEY_LANG = 'language'
+export const KEY_CHROME_PATH = 'chromePath'
+export const KEY_CONTEST_ID = 'contestId'
+export const KEY_PROBLEM_ID = 'problemId'
+export const KEY_PROBLEMS = 'problems'
+export const KEY_LANG = 'language'
 
 function getConfigFn() {
   return path.join(process.cwd(), CONFIG_FN)
@@ -51,6 +52,15 @@ export default class Config {
 
   set problemId(problemId: string) {
     this.data[KEY_PROBLEM_ID] = problemId
+    this.save()
+  }
+
+  get problems() {
+    return this.data[KEY_PROBLEMS]
+  }
+
+  set problems(problems: any) {
+    this.data[KEY_PROBLEMS] = problems
     this.save()
   }
 
