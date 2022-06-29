@@ -16,15 +16,18 @@ $ npm i -g esbuild
 * Go (TODO)
 * Rust (TODO)
 
-## Install
+## Install/Upgrade
 ```bash
 $ npm i -g leetcode-contest-cli
+```
+
+## First run
+
+```bash
 $ mkdir mySolutions
 $ cd mySolutions
 $ lcc init
 ```
-
-## First run
 
 ### Google Chrome Executable Path
 ```bash
