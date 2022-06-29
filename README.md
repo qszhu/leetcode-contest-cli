@@ -1,5 +1,11 @@
 # CLI for LeetCode Contests
 
+## Warning
+
+Experimental. Use at your own risk.
+
+在正式比赛中使用的风险未知。
+
 ## Requirements
 * Node.js v14+
 * Google Chrome
