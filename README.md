@@ -16,6 +16,12 @@ $ npm i -g esbuild
 * Go (TODO)
 * Rust (TODO)
 
+### Note for Windows
+Allow running scripts
+```
+set-ExecutionPolicy RemoteSigned
+```
+
 ## Install/Upgrade
 ```bash
 $ npm i -g leetcode-contest-cli
