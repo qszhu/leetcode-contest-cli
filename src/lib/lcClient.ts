@@ -125,13 +125,18 @@ export default class Client {
     const { data: { interpret_id } } = await axios.request(opts)
     const res: any = await this.waitResult(interpret_id, contestId, problemId)
 
-    const { status_msg, code_answer, code_output, full_runtime_error } = res
+    const { status_msg, code_answer, code_output, full_compile_error, full_runtime_error } = res
     console.log(status_msg)
 
     const codeOutput = code_output.join('\n')
     if (codeOutput) {
       console.log('Code output:')
       console.log(codeOutput)
+    }
+
+    if (full_compile_error) {
+      console.log(full_compile_error)
+      return
     }
 
     if (full_runtime_error) {

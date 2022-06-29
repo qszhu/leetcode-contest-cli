@@ -10,7 +10,11 @@ import Client from './lib/lcClient'
 import { runCmd, writeStringToFile } from './lib/utils'
 import Project from './project'
 import Cpp from './project/Cpp'
+import Go from './project/Go'
+import JavaScript from './project/JavaScript'
+import Kotlin from './project/Kotlin'
 import Python from './project/Python'
+import Rust from './project/Rust'
 import TypeScript from './project/TypeScript'
 
 const rootDir = 'contests'
@@ -26,9 +30,13 @@ async function chooseLanguage() {
       name: 'language',
       message: 'Choose a language',
       choices: [
+        { title: 'JavaScript', value: 'javascript' },
         { title: 'TypeScript', value: 'typescript' },
         { title: 'Python', value: 'python' },
         { title: 'C++', value: 'cpp' },
+        { title: 'Go', value: 'go' },
+        { title: 'Rust', value: 'rust' },
+        { title: 'Kotlin', value: 'kotlin' },
       ]
     }
   ]
@@ -40,9 +48,13 @@ async function chooseLanguage() {
 }
 
 function getProject(lang: string, contestId: string, problemId: string): Project {
+  if (lang === 'javascript') return new JavaScript(rootDir, libDir, contestId, problemId)
   if (lang === 'typescript') return new TypeScript(rootDir, libDir, contestId, problemId)
   if (lang === 'python') return new Python(rootDir, libDir, contestId, problemId)
   if (lang === 'cpp') return new Cpp(rootDir, libDir, contestId, problemId)
+  if (lang === 'go') return new Go(rootDir, libDir, contestId, problemId)
+  if (lang === 'rust') return new Rust(rootDir, libDir, contestId, problemId)
+  if (lang === 'kotlin') return new Kotlin(rootDir, libDir, contestId, problemId)
   throw new Error(`Unsupported language: ${lang}`)
 }
 
@@ -197,7 +209,10 @@ async function main() {
 
   await ensureConfig(KEY_CHROME_PATH, KEY_COOKIES)
 
-  if (cmd && cmd.toString().startsWith('http')) {
+  if (!cmd) {
+    await createAll()
+    await selectProblem()
+  } else if (cmd.toString().startsWith('http')) {
     config.contestId = cmd.toString().match(/\/contest\/(.*)\//)![1]
     config.problems = undefined
     await createAll()
@@ -215,10 +230,7 @@ async function main() {
     await chooseLanguage()
   } else if (cmd === 'list') {
     await selectProblem()
-  } else {
-    await createAll()
-    await selectProblem()
-  }
+  } else console.error(`Unknown command: ${cmd}`)
 }
 
 if (require.main === module) {

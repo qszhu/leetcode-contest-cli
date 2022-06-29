@@ -12,15 +12,15 @@ Experimental. Use at your own risk.
 * (Optional) Visual Studio Code
 
 ### Requirements for Specific Language
-* TypeScript
+* JavaScript/TypeScript
 ```bash
 $ npm i -g esbuild
 ```
 * Python
 * C++
-* Kotlin (TODO)
-* Go (TODO)
-* Rust (TODO)
+* Go
+* Rust
+* Kotlin
 
 ### Note for Windows
 Allow running scripts
@@ -68,9 +68,13 @@ $ lcc
 ✔ Google Chrome executable path: … /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
 ✔ Contest URL: … https://leetcode.cn/contest/weekly-contest-298/
 ? Choose a language › - Use arrow-keys. Return to submit.
-❯   TypeScript
+❯   JavaScript
+    TypeScript
     Python
     C++
+    Go
+    Rust
+    Kotlin
 ```
 
 ### Login
@@ -169,9 +173,13 @@ $ lcc https://leetcode.cn/contest/biweekly-contest-81/
 ```bash
 $ lcc lang
 ? Choose a language › - Use arrow-keys. Return to submit.
-❯   TypeScript
+❯   JavaScript
+    TypeScript
     Python
     C++
+    Go
+    Rust
+    Kotlin
 ```
 
 ## Troubleshooting
