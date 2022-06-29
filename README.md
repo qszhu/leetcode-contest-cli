@@ -40,7 +40,7 @@ Type `chrome://version/` in the address bar.
 
 Typical values:
 * Mac OSX: `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`
-* Windows: `C:\Program Files (x86)\Google\Chrome\Application`
+* Windows: `C:\Program Files\Google\Chrome\Application\chrome.exe`
 * Linux: `/usr/bin/google-chrome-stable`
 
 ### Contest URL

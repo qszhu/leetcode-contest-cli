@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import fs from 'fs'
 import prompts from 'prompts'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
@@ -73,7 +74,7 @@ async function ensureChromePath() {
     { type: 'text', name: 'chromePath', message: 'Google Chrome executable path:', initial },
   ]
   const resp = await prompts(questions)
-  if (!resp.chromePath) return false
+  if (!resp.chromePath || !fs.existsSync(resp.chromePath)) return false
 
   config.chromePath = resp.chromePath
   return true
