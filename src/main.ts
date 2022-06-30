@@ -14,30 +14,14 @@ const config = Config.load()
 const jar = CookieJar.load()
 const client = new Client(config, jar)
 
-async function chooseLanguage() {
-  const questions: any[] = [
-    {
-      type: 'select',
-      name: 'language',
-      message: 'Choose a language',
-      choices: ProjectFactory.supportedLanguages()
-        .map(({ name, value }) => ({ title: name, value }))
-    }
-  ]
-  const resp = await prompts(questions)
-  if (!resp.language) return false
-
-  config.language = resp.language
-  return true
+const promptFunctions: Record<string, () => Promise<boolean>> = {
+  [KEY_CHROME_PATH]: ensureChromePath,
+  [KEY_CONTEST_ID]: ensureContestId,
+  [KEY_PROBLEMS]: ensureProblems,
+  [KEY_PROBLEM_ID]: ensureProblemId,
+  [KEY_LANG]: ensureLanguage,
+  [KEY_COOKIES]: ensureCookies
 }
-
-const promptFunctions: Record<string, () => Promise<boolean>> = {}
-promptFunctions[KEY_CHROME_PATH] = ensureChromePath
-promptFunctions[KEY_CONTEST_ID] = ensureContestId
-promptFunctions[KEY_PROBLEMS] = ensureProblems
-promptFunctions[KEY_PROBLEM_ID] = ensureProblemId
-promptFunctions[KEY_LANG] = ensureLanguage
-promptFunctions[KEY_COOKIES] = ensureCookies
 
 async function ensureConfig(...keys: string[]) {
   for (const key of keys) {
@@ -59,7 +43,10 @@ async function ensureChromePath() {
     { type: 'text', name: 'chromePath', message: 'Google Chrome executable path:', initial },
   ]
   const resp = await prompts(questions)
-  if (!resp.chromePath || !fs.existsSync(resp.chromePath)) return false
+  if (!resp.chromePath || !fs.existsSync(resp.chromePath)) {
+    console.log('Invalid path.')
+    return false
+  }
 
   config.chromePath = resp.chromePath
   return true
@@ -72,11 +59,17 @@ async function ensureContestId() {
     { type: 'text', name: 'contestUrl', message: 'Contest URL:' },
   ]
   const resp = await prompts(questions)
-  if (!resp.contestUrl) return false
 
-  const contestId = resp.contestUrl.match(/\/contest\/(.*)\//)![1]
-  config.contestId = contestId
-  return true
+  if (resp.contestUrl) {
+    const match = resp.contestUrl.match(/\/contest\/(.*)\//)
+    if (match) {
+      config.contestId = match[1]
+      return true
+    }
+  }
+
+  console.log('Invalid contest url.')
+  return false
 }
 
 async function ensureProblems() {
@@ -104,7 +97,30 @@ async function ensureCookies() {
   if (jar.hasCookies()) return true
 
   await client.login()
-  return jar.hasCookies()
+
+  const success = jar.hasCookies()
+
+  if (success) console.log('Login successful.')
+  else console.log('Login failed.')
+
+  return success
+}
+
+async function chooseLanguage() {
+  const questions: any[] = [
+    {
+      type: 'select',
+      name: 'language',
+      message: 'Choose a language',
+      choices: ProjectFactory.supportedLanguages()
+        .map(({ name, value }) => ({ title: name, value }))
+    }
+  ]
+  const resp = await prompts(questions)
+  if (!resp.language) return false
+
+  config.language = resp.language
+  return true
 }
 
 async function selectProblem() {
