@@ -6,6 +6,9 @@ Experimental. Use at your own risk.
 
 在正式比赛中使用的风险未知。
 
+## Supported Languages
+JavaScript/TypeScript/Python3/C++/Go/Rust/Kotlin/Java
+
 ## Requirements
 * Node.js v14+
 * Google Chrome
@@ -16,11 +19,6 @@ Experimental. Use at your own risk.
 ```bash
 $ npm i -g esbuild
 ```
-* Python
-* C++
-* Go
-* Rust
-* Kotlin
 
 ### Note for Windows
 Allow running scripts
@@ -75,6 +73,7 @@ $ lcc
     Go
     Rust
     Kotlin
+    Java
 ```
 
 ### Login
@@ -180,6 +179,7 @@ $ lcc lang
     Go
     Rust
     Kotlin
+    Java
 ```
 
 ## Troubleshooting
@@ -189,3 +189,8 @@ Your login session may expire if you have logged in another browser window. You 
 ```bash
 $ lcc login
 ```
+
+## Migration
+
+### v0.5.0
+* Run `lcc lang` after upgrading

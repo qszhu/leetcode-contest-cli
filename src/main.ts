@@ -8,17 +8,8 @@ import Config, { KEY_CHROME_PATH, KEY_CONTEST_ID, KEY_LANG, KEY_PROBLEMS, KEY_PR
 import CookieJar, { KEY_COOKIES } from './lib/CookieJar'
 import Client from './lib/lcClient'
 import { runCmd, writeStringToFile } from './lib/utils'
-import Project from './project'
-import Cpp from './project/Cpp'
-import Go from './project/Go'
-import JavaScript from './project/JavaScript'
-import Kotlin from './project/Kotlin'
-import Python from './project/Python'
-import Rust from './project/Rust'
-import TypeScript from './project/TypeScript'
+import ProjectFactory from './project/factory'
 
-const rootDir = 'contests'
-const libDir = 'lib'
 const config = Config.load()
 const jar = CookieJar.load()
 const client = new Client(config, jar)
@@ -29,15 +20,8 @@ async function chooseLanguage() {
       type: 'select',
       name: 'language',
       message: 'Choose a language',
-      choices: [
-        { title: 'JavaScript', value: 'javascript' },
-        { title: 'TypeScript', value: 'typescript' },
-        { title: 'Python', value: 'python' },
-        { title: 'C++', value: 'cpp' },
-        { title: 'Go', value: 'go' },
-        { title: 'Rust', value: 'rust' },
-        { title: 'Kotlin', value: 'kotlin' },
-      ]
+      choices: ProjectFactory.supportedLanguages()
+        .map(({ name, value }) => ({ title: name, value }))
     }
   ]
   const resp = await prompts(questions)
@@ -45,17 +29,6 @@ async function chooseLanguage() {
 
   config.language = resp.language
   return true
-}
-
-function getProject(lang: string, contestId: string, problemId: string): Project {
-  if (lang === 'javascript') return new JavaScript(rootDir, libDir, contestId, problemId)
-  if (lang === 'typescript') return new TypeScript(rootDir, libDir, contestId, problemId)
-  if (lang === 'python') return new Python(rootDir, libDir, contestId, problemId)
-  if (lang === 'cpp') return new Cpp(rootDir, libDir, contestId, problemId)
-  if (lang === 'go') return new Go(rootDir, libDir, contestId, problemId)
-  if (lang === 'rust') return new Rust(rootDir, libDir, contestId, problemId)
-  if (lang === 'kotlin') return new Kotlin(rootDir, libDir, contestId, problemId)
-  throw new Error(`Unsupported language: ${lang}`)
 }
 
 const promptFunctions: Record<string, () => Promise<boolean>> = {}
@@ -157,7 +130,7 @@ async function selectProblem() {
 }
 
 async function createProject(lang: string, contestId: string, problemId: string) {
-  const proj = getProject(lang, contestId, problemId)
+  const proj = ProjectFactory.getProject(lang, contestId, problemId)
   if (!proj.hasSolution()) {
     const problem = await client.readProblem(contestId, problemId)
     proj.newSolution(problem)
@@ -178,21 +151,21 @@ async function createAll() {
 async function buildSolution() {
   if (!(await ensureConfig(KEY_LANG, KEY_CONTEST_ID, KEY_PROBLEM_ID))) return false
 
-  const proj = getProject(config.language, config.contestId, config.problemId)
+  const proj = ProjectFactory.getProject(config.language, config.contestId, config.problemId)
   await proj.build()
 }
 
 async function testSolution() {
   if (!(await ensureConfig(KEY_LANG, KEY_CONTEST_ID, KEY_PROBLEM_ID))) return false
 
-  const proj = getProject(config.language, config.contestId, config.problemId)
+  const proj = ProjectFactory.getProject(config.language, config.contestId, config.problemId)
   await client.testSolution(proj, config.contestId, config.problemId)
 }
 
 async function submitSolution() {
   if (!(await ensureConfig(KEY_LANG, KEY_CONTEST_ID, KEY_PROBLEM_ID))) return false
 
-  const proj = getProject(config.language, config.contestId, config.problemId)
+  const proj = ProjectFactory.getProject(config.language, config.contestId, config.problemId)
   await client.submitSolution(proj, config.contestId, config.problemId)
 }
 
@@ -207,7 +180,7 @@ async function main() {
   const argv = await yargs(hideBin(process.argv)).version().argv
   const [cmd] = argv._
 
-  await ensureConfig(KEY_CHROME_PATH, KEY_COOKIES)
+  if (!(await ensureConfig(KEY_CHROME_PATH, KEY_COOKIES))) return
 
   if (!cmd) {
     await createAll()
