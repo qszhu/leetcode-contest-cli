@@ -9,8 +9,6 @@ import CookieJar from "./CookieJar"
 import { newPage } from "./crawler"
 import { sleep } from "./utils"
 
-const HOST = 'https://leetcode.cn'
-
 function extractOutput(content: string) {
   return content.split('\n')
     .filter(line => line.startsWith('输出：'))
@@ -29,7 +27,7 @@ export default class Client {
   constructor(private config: Config, private cookieJar: CookieJar) { }
 
   async login() {
-    const url = `${HOST}/accounts/login/`
+    const url = `${this.config.site}/accounts/login/`
 
     await newPage(url, async page => {
       await page.waitForNavigation({ timeout: 5 * 60 * 1000 })
@@ -40,7 +38,7 @@ export default class Client {
   }
 
   async listProblems(contestId: string) {
-    const url = `${HOST}/contest/${contestId}/`
+    const url = `${this.config.site}/contest/${contestId}/`
 
     const problemLinkSel = 'ul.contest-question-list a'
 
@@ -67,7 +65,7 @@ export default class Client {
   }
 
   async readProblem(contestId: string, problemId: string): Promise<Problem> {
-    const url = `${HOST}/contest/${contestId}/problems/${problemId}/`
+    const url = `${this.config.site}/contest/${contestId}/problems/${problemId}/`
 
     let pageData: any
     let screenShot: any
@@ -119,8 +117,8 @@ export default class Client {
       test_mode: false,
       judge_type: 'large'
     }
-    const url = `${HOST}/contest/api/${contestId}/problems/${problemId}/interpret_solution/`
-    const referer = `${HOST}/contest/${contestId}/problems/${problemId}/`
+    const url = `${this.config.site}/contest/api/${contestId}/problems/${problemId}/interpret_solution/`
+    const referer = `${this.config.site}/contest/${contestId}/problems/${problemId}/`
     const cookies = this.cookieJar.cookiesHeader
     const opts = {
       url,
@@ -176,8 +174,8 @@ export default class Client {
   }
 
   private async getSubmissionResult(submissionId: string, contestId: string, problemId: string) {
-    const url = `${HOST}/submissions/detail/${submissionId}/check/`
-    const referer = `${HOST}/contest/${contestId}/problems/${problemId}/`
+    const url = `${this.config.site}/submissions/detail/${submissionId}/check/`
+    const referer = `${this.config.site}/contest/${contestId}/problems/${problemId}/`
     const cookies = this.cookieJar.cookiesHeader
     const opts = {
       url,
@@ -200,8 +198,8 @@ export default class Client {
       test_mode: false,
       judge_type: 'large'
     }
-    const url = `${HOST}/contest/api/${contestId}/problems/${problemId}/submit/`
-    const referer = `${HOST}/contest/${contestId}/problems/${problemId}/`
+    const url = `${this.config.site}/contest/api/${contestId}/problems/${problemId}/submit/`
+    const referer = `${this.config.site}/contest/${contestId}/problems/${problemId}/`
     const cookies = this.cookieJar.cookiesHeader
     const opts = {
       url,

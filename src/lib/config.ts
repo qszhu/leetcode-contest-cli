@@ -7,6 +7,7 @@ export const KEY_CONTEST_ID = 'contestId'
 export const KEY_PROBLEM_ID = 'problemId'
 export const KEY_PROBLEMS = 'problems'
 export const KEY_LANG = 'language'
+export const KEY_SITE = 'site'
 const KEY_VERBOSE = 'verbose'
 
 function getConfigFn() {
@@ -80,6 +81,15 @@ export default class Config {
 
   set verbose(v: boolean) {
     this.data[KEY_VERBOSE] = v
+    this.save()
+  }
+
+  get site() {
+    return this.data[KEY_SITE]
+  }
+
+  set site(site: string) {
+    this.data[KEY_SITE] = site
     this.save()
   }
 }

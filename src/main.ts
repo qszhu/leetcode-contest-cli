@@ -4,7 +4,7 @@ import prompts from 'prompts'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
-import Config, { KEY_CHROME_PATH, KEY_CONTEST_ID, KEY_LANG, KEY_PROBLEMS, KEY_PROBLEM_ID } from './lib/config'
+import Config, { KEY_CHROME_PATH, KEY_CONTEST_ID, KEY_LANG, KEY_PROBLEMS, KEY_PROBLEM_ID, KEY_SITE } from './lib/config'
 import CookieJar, { KEY_COOKIES } from './lib/CookieJar'
 import Client from './lib/lcClient'
 import { runCmd, writeStringToFile } from './lib/utils'
@@ -16,11 +16,12 @@ const client = new Client(config, jar)
 
 const promptFunctions: Record<string, () => Promise<boolean>> = {
   [KEY_CHROME_PATH]: ensureChromePath,
+  [KEY_SITE]: ensureSite,
+  [KEY_COOKIES]: ensureCookies,
   [KEY_CONTEST_ID]: ensureContestId,
   [KEY_PROBLEMS]: ensureProblems,
   [KEY_PROBLEM_ID]: ensureProblemId,
   [KEY_LANG]: ensureLanguage,
-  [KEY_COOKIES]: ensureCookies
 }
 
 async function ensureConfig(...keys: string[]) {
@@ -49,6 +50,27 @@ async function ensureChromePath() {
   }
 
   config.chromePath = resp.chromePath
+  return true
+}
+
+async function ensureSite() {
+  if (config.site) return true
+
+  const questions: any[] = [
+    {
+      type: 'select',
+      name: 'site',
+      message: 'Choose a site',
+      choices: [
+        { title: '力扣', value: 'https://leetcode.cn' },
+        { title: 'LeetCode', value: 'https://leetcode.com' }
+      ]
+    }
+  ]
+  const resp = await prompts(questions)
+  if (!resp.site) return false
+
+  config.site = resp.site
   return true
 }
 
@@ -199,7 +221,7 @@ async function main() {
 
   const [cmd] = argv._
 
-  if (!(await ensureConfig(KEY_CHROME_PATH, KEY_COOKIES))) return
+  if (!(await ensureConfig(KEY_CHROME_PATH, KEY_SITE, KEY_COOKIES))) return
 
   if (!cmd) {
     await createAll()
