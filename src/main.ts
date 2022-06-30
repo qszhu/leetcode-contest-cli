@@ -194,6 +194,9 @@ async function initCwd() {
 
 async function main() {
   const argv = await yargs(hideBin(process.argv)).version().argv
+
+  config.verbose = argv.v ? true : false
+
   const [cmd] = argv._
 
   if (!(await ensureConfig(KEY_CHROME_PATH, KEY_COOKIES))) return

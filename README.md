@@ -184,6 +184,8 @@ $ lcc lang
 
 ## Troubleshooting
 
+If you encouter errors, append `-v` to the command you just typed to see what was going on.
+
 ### Session Expired
 Your login session may expire if you have logged in another browser window. You can login again if you have encountered errors.
 ```bash

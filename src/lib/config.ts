@@ -7,6 +7,7 @@ export const KEY_CONTEST_ID = 'contestId'
 export const KEY_PROBLEM_ID = 'problemId'
 export const KEY_PROBLEMS = 'problems'
 export const KEY_LANG = 'language'
+const KEY_VERBOSE = 'verbose'
 
 function getConfigFn() {
   return path.join(process.cwd(), CONFIG_FN)
@@ -70,6 +71,15 @@ export default class Config {
 
   set language(lang: string) {
     this.data[KEY_LANG] = lang
+    this.save()
+  }
+
+  get verbose() {
+    return this.data[KEY_VERBOSE] || false
+  }
+
+  set verbose(v: boolean) {
+    this.data[KEY_VERBOSE] = v
     this.save()
   }
 }

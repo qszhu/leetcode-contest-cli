@@ -18,6 +18,13 @@ function extractOutput(content: string) {
     .join('\n')
 }
 
+async function request(opts: any, debug = false) {
+  if (debug) console.log(opts)
+  const res = await axios.request(opts)
+  if (debug) console.log(res.data)
+  return res.data
+}
+
 export default class Client {
   constructor(private config: Config, private cookieJar: CookieJar) { }
 
@@ -29,7 +36,7 @@ export default class Client {
 
       // save cookies
       this.cookieJar.cookies = await page.cookies()
-    }, { executablePath: this.config.chromePath, headless: false })
+    }, { executablePath: this.config.chromePath, headless: false, debug: this.config.verbose })
   }
 
   async listProblems(contestId: string) {
@@ -49,7 +56,7 @@ export default class Client {
       }, { problemLinkSel })
 
       this.cookieJar.cookies = await page.cookies()
-    }, { cookies: this.cookieJar.cookies, executablePath: this.config.chromePath })
+    }, { cookies: this.cookieJar.cookies, executablePath: this.config.chromePath, debug: this.config.verbose })
 
     return problems.map(p => {
       const { href, text } = p
@@ -70,7 +77,7 @@ export default class Client {
 
       screenShot = await page.screenshot({ fullPage: true })
       this.cookieJar.cookies = await page.cookies()
-    }, { cookies: this.cookieJar.cookies, executablePath: this.config.chromePath })
+    }, { cookies: this.cookieJar.cookies, executablePath: this.config.chromePath, debug: this.config.verbose })
 
     const {
       questionId: rawId,
@@ -122,7 +129,7 @@ export default class Client {
       data
     }
 
-    const { data: { interpret_id } } = await axios.request(opts)
+    const { interpret_id } = await request(opts, this.config.verbose)
     const res: any = await this.waitResult(interpret_id, contestId, problemId)
 
     const { status_msg, code_answer, code_output, full_compile_error, full_runtime_error } = res
@@ -180,8 +187,7 @@ export default class Client {
         Referer: referer,
       }
     }
-    const res = await axios.request(opts)
-    return res.data
+    return await request(opts, this.config.verbose)
   }
 
   async submitSolution(project: Project, contestId: string, problemId: string) {
@@ -204,7 +210,7 @@ export default class Client {
       data
     }
 
-    const { data: { submission_id } } = await axios.request(opts)
+    const { submission_id } = await request(opts, this.config.verbose)
     const res: any = await this.waitResult(submission_id, contestId, problemId)
 
     const { status_msg, full_runtime_error } = res
