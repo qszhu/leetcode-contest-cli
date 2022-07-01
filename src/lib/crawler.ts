@@ -30,6 +30,7 @@ export async function newPage(
     devtools: opts.devtools
   }
   if (opts.executablePath) launchOpts.executablePath = opts.executablePath
+  if (opts.proxy) launchOpts.args.push(`--proxy-server=${opts.proxy}`)
 
   const browser = await puppeteer.launch(launchOpts)
   const page = await browser.newPage()

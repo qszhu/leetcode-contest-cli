@@ -1,6 +1,6 @@
 {
   "name": "leetcode-contest-cli",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "homepage": "https://github.com/qszhu/leetcode-contest-cli#readme",
   "engines": {
     "node": ">=14"
@@ -15,6 +15,7 @@
     "@types/html-to-text": "^8.1.0",
     "@types/node": "^18.0.0",
     "@types/prompts": "^2.0.14",
+    "@types/ws": "^8.5.3",
     "@types/yargs": "^17.0.10",
     "@typescript-eslint/eslint-plugin": "^5.28.0",
     "@typescript-eslint/parser": "^5.28.0",

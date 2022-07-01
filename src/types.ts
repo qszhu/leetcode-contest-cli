@@ -15,7 +15,6 @@ export type Problem = {
   rawId: string
   contestId: string
   problemId: string
-  content: string
   input: string
   output: string
   templates: Record<string, string>
@@ -30,4 +29,5 @@ export type PptrOptions = {
   devtools?: boolean
   debug?: boolean
   cookies?: any[]
+  proxy?: string
 }

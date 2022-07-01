@@ -9,6 +9,7 @@ export const KEY_PROBLEMS = 'problems'
 export const KEY_LANG = 'language'
 export const KEY_SITE = 'site'
 const KEY_VERBOSE = 'verbose'
+const KEY_PROXY = 'proxy'
 
 function getConfigFn() {
   return path.join(process.cwd(), CONFIG_FN)
@@ -90,6 +91,15 @@ export default class Config {
 
   set site(site: string) {
     this.data[KEY_SITE] = site
+    this.save()
+  }
+
+  get proxy() {
+    return this.data[KEY_PROXY]
+  }
+
+  set proxy(proxy: string) {
+    this.data[KEY_PROXY] = proxy
     this.save()
   }
 }

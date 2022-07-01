@@ -1,6 +1,7 @@
 import axios from "axios"
 import fs from 'fs'
 import { convert } from "html-to-text"
+import HttpsProxyAgent from 'https-proxy-agent'
 
 import Project from "../project"
 import { Problem } from "../types"
@@ -9,10 +10,11 @@ import CookieJar from "./CookieJar"
 import { newPage } from "./crawler"
 import { sleep } from "./utils"
 
-function extractOutput(content: string) {
+function extractOutput(content: string, cn: boolean) {
+  const output = cn ? '输出：' : 'Output: '
   return content.split('\n')
-    .filter(line => line.startsWith('输出：'))
-    .map(line => line.match(/^输出：(.+)$/)![1])
+    .filter(line => line.startsWith(output))
+    .map(line => line.match(new RegExp(`^${output}(.+)$`))![1])
     .join('\n')
 }
 
@@ -26,15 +28,22 @@ async function request(opts: any, debug = false) {
 export default class Client {
   constructor(private config: Config, private cookieJar: CookieJar) { }
 
+  private getPptrOpts(opts: any) {
+    return Object.assign({
+      executablePath: this.config.chromePath,
+      debug: this.config.verbose,
+      proxy: this.config.proxy
+    }, opts)
+  }
+
   async login() {
     const url = `${this.config.site}/accounts/login/`
 
     await newPage(url, async page => {
       await page.waitForNavigation({ timeout: 5 * 60 * 1000 })
-
       // save cookies
       this.cookieJar.cookies = await page.cookies()
-    }, { executablePath: this.config.chromePath, headless: false, debug: this.config.verbose })
+    }, this.getPptrOpts({ headless: false }))
   }
 
   async listProblems(contestId: string) {
@@ -54,7 +63,7 @@ export default class Client {
       }, { problemLinkSel })
 
       this.cookieJar.cookies = await page.cookies()
-    }, { cookies: this.cookieJar.cookies, executablePath: this.config.chromePath, debug: this.config.verbose })
+    }, this.getPptrOpts({ cookies: this.cookieJar.cookies }))
 
     return problems.map(p => {
       const { href, text } = p
@@ -69,24 +78,32 @@ export default class Client {
 
     let pageData: any
     let screenShot: any
+    let questionContent: any
+
+    const questionContentSel = 'div.question-content'
 
     await newPage(url, async page => {
       pageData = await page.evaluate(() => eval('pageData'))
+      questionContent = await page.evaluate(({ questionContentSel }) => {
+        const content = document.querySelector(questionContentSel)
+        if (content) return content.innerHTML
+        return ''
+      }, { questionContentSel })
 
       screenShot = await page.screenshot({ fullPage: true })
       this.cookieJar.cookies = await page.cookies()
-    }, { cookies: this.cookieJar.cookies, executablePath: this.config.chromePath, debug: this.config.verbose })
+    }, this.getPptrOpts({ cookies: this.cookieJar.cookies }))
 
     const {
       questionId: rawId,
-      questionContent,
-      questionExampleTestcases,
+      questionExampleTestcases: input,
       codeDefinition,
     } = pageData
 
     const content = convert(questionContent, {
       wordwrap: 100
     })
+    const output = extractOutput(content, this.config.site.endsWith('.cn'))
     const templates = codeDefinition.reduce((acc: any, val: any) => {
       acc[val.value] = val.defaultCode
       return acc
@@ -96,12 +113,17 @@ export default class Client {
       rawId,
       contestId,
       problemId,
-      content,
-      input: questionExampleTestcases,
-      output: extractOutput(content),
+      input,
+      output,
       templates,
       screenShot
     }
+  }
+
+  private setProxy(opts: any) {
+    const [host, port] = this.config.proxy.split(':')
+    const httpsAgent = HttpsProxyAgent({ host, port })
+    opts.agent = httpsAgent
   }
 
   async testSolution(project: Project, contestId: string, problemId: string) {
@@ -120,12 +142,17 @@ export default class Client {
     const url = `${this.config.site}/contest/api/${contestId}/problems/${problemId}/interpret_solution/`
     const referer = `${this.config.site}/contest/${contestId}/problems/${problemId}/`
     const cookies = this.cookieJar.cookiesHeader
-    const opts = {
+    const opts: any = {
       url,
       method: 'post',
-      headers: { Cookie: cookies, Referer: referer },
+      headers: {
+        Cookie: cookies,
+        Referer: referer,
+        'x-csrftoken': this.cookieJar.csrfToken,
+      },
       data
     }
+    if (this.config.proxy) this.setProxy(opts)
 
     const { interpret_id } = await request(opts, this.config.verbose)
     const res: any = await this.waitResult(interpret_id, contestId, problemId)
@@ -177,14 +204,16 @@ export default class Client {
     const url = `${this.config.site}/submissions/detail/${submissionId}/check/`
     const referer = `${this.config.site}/contest/${contestId}/problems/${problemId}/`
     const cookies = this.cookieJar.cookiesHeader
-    const opts = {
+    const opts: any = {
       url,
       method: 'get',
       headers: {
         Cookie: cookies,
         Referer: referer,
-      }
+        'x-csrftoken': this.cookieJar.csrfToken,
+      },
     }
+    if (this.config.proxy) this.setProxy(opts)
     return await request(opts, this.config.verbose)
   }
 
@@ -201,12 +230,17 @@ export default class Client {
     const url = `${this.config.site}/contest/api/${contestId}/problems/${problemId}/submit/`
     const referer = `${this.config.site}/contest/${contestId}/problems/${problemId}/`
     const cookies = this.cookieJar.cookiesHeader
-    const opts = {
+    const opts: any = {
       url,
       method: 'post',
-      headers: { Cookie: cookies, Referer: referer },
+      headers: {
+        Cookie: cookies,
+        Referer: referer,
+        'x-csrftoken': this.cookieJar.csrfToken,
+      },
       data
     }
+    if (this.config.proxy) this.setProxy(opts)
 
     const { submission_id } = await request(opts, this.config.verbose)
     const res: any = await this.waitResult(submission_id, contestId, problemId)

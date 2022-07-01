@@ -27,6 +27,7 @@ export default class CookieJar {
   hasCookies() {
     const cookies = this.data[KEY_COOKIES]
     return cookies && cookies.some((cookie: any) => cookie.name === 'LEETCODE_SESSION')
+      && cookies.some((cookies: any) => cookies.name === 'csrftoken')
   }
 
   get cookies() {
@@ -41,5 +42,11 @@ export default class CookieJar {
   set cookies(cookies: any) {
     this.data[KEY_COOKIES] = cookies
     this.save()
+  }
+
+  get csrfToken() {
+    const tokens = this.data[KEY_COOKIES]
+      .filter((cookie: any) => cookie.name === 'csrftoken')
+    if (tokens.length > 0) return tokens[0].value
   }
 }
