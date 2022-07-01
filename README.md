@@ -53,18 +53,23 @@ Typical values:
 * Windows: `C:\Program Files\Google\Chrome\Application\chrome.exe`
 * Linux: `/usr/bin/google-chrome-stable`
 
-### Contest URL
+### Choosing Site
 ```bash
 $ lcc
 ✔ Google Chrome executable path: … /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
-? Contest URL: › 
+✔ Choose a site › 力扣
 ```
+
+### Login
+Before doing this, make sure you have already registered for the contest or have started a virtual contest.
+
+Login in the opened browser window.
+
+## Starting a Contest
 
 ### Preferred Language
 ```bash
 $ lcc
-✔ Google Chrome executable path: … /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
-✔ Contest URL: … https://leetcode.cn/contest/weekly-contest-298/
 ? Choose a language › - Use arrow-keys. Return to submit.
 ❯   JavaScript
     TypeScript
@@ -76,10 +81,12 @@ $ lcc
     Java
 ```
 
-### Login
-Before doing this, make sure you have already registered for the contest or have started a virtual contest.
-
-Login in the opened browser window.
+### Contest URL
+```bash
+$ lcc
+✔ Choose a language › TypeScript
+✔ Contest URL: … https://leetcode.cn/contest/weekly-contest-298/
+```
 
 ## Solving Problems
 

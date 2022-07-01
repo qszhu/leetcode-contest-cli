@@ -14,7 +14,10 @@ function extractOutput(content: string, cn: boolean) {
   const output = cn ? '输出：' : 'Output: '
   return content.split('\n')
     .filter(line => line.startsWith(output))
-    .map(line => line.match(new RegExp(`^${output}(.+)$`))![1])
+    .map(line => {
+      const m = line.match(new RegExp(`^${output}(.+)$`))
+      return m ? m[1] : ''
+    })
     .join('\n')
 }
 
