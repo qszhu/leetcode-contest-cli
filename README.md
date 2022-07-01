@@ -57,7 +57,7 @@ Typical values:
 ```bash
 $ lcc
 ✔ Google Chrome executable path: … /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
-✔ Choose a site › 力扣
+✔ Choose a site › 力扣 (leetcode.cn)
 ```
 
 ### Login

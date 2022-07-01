@@ -62,8 +62,8 @@ async function ensureSite() {
       name: 'site',
       message: 'Choose a site',
       choices: [
-        { title: '力扣', value: 'https://leetcode.cn' },
-        { title: 'LeetCode', value: 'https://leetcode.com' }
+        { title: '力扣 (leetcode.cn)', value: 'https://leetcode.cn' },
+        { title: 'LeetCode (leetcode.com)', value: 'https://leetcode.com' }
       ]
     }
   ]
