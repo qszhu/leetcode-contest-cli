@@ -43,10 +43,13 @@ export default class Client {
     const url = `${this.config.site}/accounts/login/`
 
     await newPage(url, async page => {
-      await page.waitForNavigation({ timeout: 5 * 60 * 1000 })
+      while (true) {
+        await page.waitForNavigation({ timeout: 5 * 60 * 1000 })
+        if (page.url().startsWith(`${this.config.site}/problemset`)) break
+      }
       // save cookies
       this.cookieJar.cookies = await page.cookies()
-    }, this.getPptrOpts({ headless: false }))
+    }, this.getPptrOpts({ headless: false, slowMo: 250 }))
   }
 
   async listProblems(contestId: string) {
