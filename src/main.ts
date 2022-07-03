@@ -235,6 +235,7 @@ async function main() {
     await buildSolution()
     await testSolution()
   } else if (cmd === 'submit') {
+    await buildSolution()
     await submitSolution()
   } else if (cmd === 'login') {
     await client.login()
