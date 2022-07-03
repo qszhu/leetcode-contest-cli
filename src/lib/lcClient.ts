@@ -45,7 +45,7 @@ export default class Client {
     await newPage(url, async page => {
       while (true) {
         await page.waitForNavigation({ timeout: 5 * 60 * 1000 })
-        if (page.url().startsWith(`${this.config.site}/problemset`)) break
+        if (page.url().startsWith(`${this.config.site}`)) break
       }
       // save cookies
       this.cookieJar.cookies = await page.cookies()
