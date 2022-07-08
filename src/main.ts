@@ -227,7 +227,7 @@ async function main() {
     await createAll()
     await selectProblem()
   } else if (cmd.toString().startsWith('http')) {
-    config.contestId = cmd.toString().match(/\/contest\/(.*)\//)![1]
+    config.contestId = cmd.toString().match(/\/contest\/(.+?)\/?$/)![1]
     config.problems = undefined
     await createAll()
     await selectProblem()
