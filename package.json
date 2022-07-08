@@ -1,6 +1,6 @@
 {
   "name": "leetcode-contest-cli",
-  "version": "0.6.7",
+  "version": "0.6.8",
   "homepage": "https://github.com/qszhu/leetcode-contest-cli#readme",
   "engines": {
     "node": ">=14"
@@ -9,18 +9,23 @@
     "lcc": "./dist/main.js"
   },
   "scripts": {
-    "build": "del dist && tsc"
+    "build": "del dist && tsc",
+    "test": "mocha -r ts-node/register src/**/*.spec.ts"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.1",
     "@types/html-to-text": "^8.1.0",
+    "@types/mocha": "^9.1.1",
     "@types/node": "^18.0.0",
     "@types/prompts": "^2.0.14",
     "@types/ws": "^8.5.3",
     "@types/yargs": "^17.0.10",
     "@typescript-eslint/eslint-plugin": "^5.28.0",
     "@typescript-eslint/parser": "^5.28.0",
+    "chai": "^4.3.6",
     "del-cli": "^4.0.1",
     "eslint": "^8.18.0",
+    "mocha": "^10.0.0",
     "ts-node": "^10.8.1",
     "typescript": "^4.7.4"
   },

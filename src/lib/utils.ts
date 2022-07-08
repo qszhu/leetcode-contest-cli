@@ -2,6 +2,8 @@ import { exec, ExecException } from 'child_process'
 import fs from 'fs'
 import path from 'path'
 
+import { convert } from "html-to-text"
+
 export function ensureDir(dir: string) {
   fs.mkdirSync(dir, { recursive: true })
 }
@@ -39,4 +41,23 @@ export async function sleep(ms: number) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms)
   })
+}
+
+export function extractContestId(url: string) {
+  const m = url.match(/\/contest\/(.+?)\/?$/)
+  if (m) return m[1]
+}
+
+export function extractOutput(htmlContent: string, cn: boolean) {
+  const textContent = convert(htmlContent, {
+    wordwrap: 100
+  })
+  const output = cn ? '输出[：:]' : 'Output:'
+  return textContent.split('\n')
+    .map(line => {
+      const m = line.match(new RegExp(`^${output}(.+)$`))
+      return m ? m[1].trim() : ''
+    })
+    .filter(m => m.length > 0)
+    .join('\n')
 }

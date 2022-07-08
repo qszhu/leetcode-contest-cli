@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 import fs from 'fs'
-import prompts from 'prompts'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
 import Config, { KEY_CHROME_PATH, KEY_CONTEST_ID, KEY_LANG, KEY_PROBLEMS, KEY_PROBLEM_ID, KEY_SITE } from './lib/config'
 import CookieJar, { KEY_COOKIES } from './lib/CookieJar'
 import Client from './lib/lcClient'
-import { runCmd, writeStringToFile } from './lib/utils'
+import { extractContestId, runCmd, writeStringToFile } from './lib/utils'
 import ProjectFactory from './project/factory'
+import { promptChromePath, promptContestUrl, promptLanguages, promptProblems, promptSites } from './prompt'
 
 const config = Config.load()
 const jar = CookieJar.load()
@@ -39,11 +39,7 @@ async function ensureConfig(...keys: string[]) {
 async function ensureChromePath() {
   if (config.chromePath) return true
 
-  const initial = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-  const questions: any[] = [
-    { type: 'text', name: 'chromePath', message: 'Google Chrome executable path:', initial },
-  ]
-  const resp = await prompts(questions)
+  const resp = await promptChromePath()
   if (!resp.chromePath || !fs.existsSync(resp.chromePath)) {
     console.log('Invalid path.')
     return false
@@ -56,18 +52,7 @@ async function ensureChromePath() {
 async function ensureSite() {
   if (config.site) return true
 
-  const questions: any[] = [
-    {
-      type: 'select',
-      name: 'site',
-      message: 'Choose a site',
-      choices: [
-        { title: '力扣 (leetcode.cn)', value: 'https://leetcode.cn' },
-        { title: 'LeetCode (leetcode.com)', value: 'https://leetcode.com' }
-      ]
-    }
-  ]
-  const resp = await prompts(questions)
+  const resp = await promptSites()
   if (!resp.site) return false
 
   config.site = resp.site
@@ -77,15 +62,11 @@ async function ensureSite() {
 async function ensureContestId() {
   if (config.contestId) return true
 
-  const questions: any[] = [
-    { type: 'text', name: 'contestUrl', message: 'Contest URL:' },
-  ]
-  const resp = await prompts(questions)
-
+  const resp = await promptContestUrl()
   if (resp.contestUrl) {
-    const match = resp.contestUrl.match(/\/contest\/(.*)\//)
-    if (match) {
-      config.contestId = match[1]
+    const contestId = extractContestId(resp.contestUrl)
+    if (contestId) {
+      config.contestId = contestId
       return true
     }
   }
@@ -106,7 +87,7 @@ async function ensureProblems() {
 async function ensureProblemId() {
   if (config.problemId) return true
 
-  return await selectProblem()
+  return await chooseProblem()
 }
 
 async function ensureLanguage() {
@@ -129,34 +110,17 @@ async function ensureCookies() {
 }
 
 async function chooseLanguage() {
-  const questions: any[] = [
-    {
-      type: 'select',
-      name: 'language',
-      message: 'Choose a language',
-      choices: ProjectFactory.supportedLanguages()
-        .map(({ name, value }) => ({ title: name, value }))
-    }
-  ]
-  const resp = await prompts(questions)
+  const resp = await promptLanguages()
   if (!resp.language) return false
 
   config.language = resp.language
   return true
 }
 
-async function selectProblem() {
+async function chooseProblem() {
   if (!(await ensureConfig(KEY_LANG, KEY_CONTEST_ID, KEY_PROBLEMS))) return false
 
-  const questions: any[] = [
-    {
-      type: 'select',
-      name: 'problemId',
-      message: 'Choose a problem',
-      choices: config.problems.map((p: any) => ({ title: p.title, value: p.problemId }))
-    }
-  ]
-  const resp = await prompts(questions)
+  const resp = await promptProblems(config)
   if (!resp.problemId) return false
 
   config.problemId = resp.problemId
@@ -225,12 +189,12 @@ async function main() {
 
   if (!cmd) {
     await createAll()
-    await selectProblem()
+    await chooseProblem()
   } else if (cmd.toString().startsWith('http')) {
-    config.contestId = cmd.toString().match(/\/contest\/(.+?)\/?$/)![1]
+    config.contestId = extractContestId(cmd.toString())
     config.problems = undefined
     await createAll()
-    await selectProblem()
+    await chooseProblem()
   } else if (cmd === 'test') {
     await buildSolution()
     await testSolution()
@@ -244,7 +208,7 @@ async function main() {
   } else if (cmd === 'lang') {
     await chooseLanguage()
   } else if (cmd === 'list') {
-    await selectProblem()
+    await chooseProblem()
   } else console.error(`Unknown command: ${cmd}`)
 }
 

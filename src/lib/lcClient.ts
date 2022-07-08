@@ -1,6 +1,5 @@
 import axios from "axios"
 import fs from 'fs'
-import { convert } from "html-to-text"
 import HttpsProxyAgent from 'https-proxy-agent'
 
 import Project from "../project"
@@ -8,18 +7,7 @@ import { Problem } from "../types"
 import Config from "./config"
 import CookieJar from "./CookieJar"
 import { newPage } from "./crawler"
-import { sleep } from "./utils"
-
-function extractOutput(content: string, cn: boolean) {
-  const output = cn ? '输出：' : 'Output: '
-  return content.split('\n')
-    .filter(line => line.startsWith(output))
-    .map(line => {
-      const m = line.match(new RegExp(`^${output}(.+)$`))
-      return m ? m[1] : ''
-    })
-    .join('\n')
-}
+import { extractOutput, sleep } from "./utils"
 
 async function request(opts: any, debug = false) {
   if (debug) console.log(opts)
@@ -106,10 +94,7 @@ export default class Client {
       codeDefinition,
     } = pageData
 
-    const content = convert(questionContent, {
-      wordwrap: 100
-    })
-    const output = extractOutput(content, this.config.site.endsWith('.cn'))
+    const output = extractOutput(questionContent, this.config.site.endsWith('.cn'))
     const templates = codeDefinition.reduce((acc: any, val: any) => {
       acc[val.value] = val.defaultCode
       return acc

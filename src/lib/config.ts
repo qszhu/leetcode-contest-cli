@@ -44,7 +44,7 @@ export default class Config {
     return this.data[KEY_CONTEST_ID]
   }
 
-  set contestId(contestId: string) {
+  set contestId(contestId: any) {
     this.data[KEY_CONTEST_ID] = contestId
     this.save()
   }
