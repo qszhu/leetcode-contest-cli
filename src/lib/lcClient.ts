@@ -168,7 +168,7 @@ export default class Client {
     }
 
     const actualOutput = code_answer.join('\n')
-    if (actualOutput === output) {
+    if (actualOutput.trim() === output.trim()) {
       console.log('SUCCESS')
       return
     }

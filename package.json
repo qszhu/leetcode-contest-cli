@@ -1,6 +1,6 @@
 {
   "name": "leetcode-contest-cli",
-  "version": "0.6.8",
+  "version": "0.6.9",
   "homepage": "https://github.com/qszhu/leetcode-contest-cli#readme",
   "engines": {
     "node": ">=14"
