@@ -16,6 +16,8 @@ export async function newPage(
   cb: (page: puppeteer.Page, browser: puppeteer.Browser) => Promise<void>,
   opts: PptrOptions = {}
 ) {
+  let start = new Date().getTime()
+
   if (opts.debug) {
     opts.headless = false
     opts.keepOpen = true
@@ -36,7 +38,7 @@ export async function newPage(
   await page.setViewport({ width: WIDTH, height: HEIGHT })
 
   if (opts.cookies) await page.setCookie(...opts.cookies)
-  await page.goto(url, { waitUntil: 'networkidle2' })
+  await page.goto(url, { waitUntil: 'domcontentloaded' })
 
   // crucial: remove webdriver property
   await page.evaluate(() => {
@@ -44,7 +46,6 @@ export async function newPage(
       get: () => false,
     })
   })
-
 
   if (opts.debug) {
     page.on('console', msg => console.log('PAGE LOG:', msg.text()))
@@ -55,4 +56,6 @@ export async function newPage(
   if (!opts.keepOpen) {
     await browser.close()
   }
+
+  console.log(`- ${((new Date().getTime() - start) / 1000).toFixed(3)}s`)
 }

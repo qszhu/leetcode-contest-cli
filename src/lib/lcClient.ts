@@ -76,7 +76,11 @@ export default class Client {
     const questionContentSel = 'div.question-content'
 
     await newPage(url, async page => {
-      pageData = await page.evaluate(() => eval('pageData'))
+      await page.waitForSelector(questionContentSel)
+
+      while (!pageData) {
+        pageData = await page.evaluate(() => eval('pageData'))
+      }
       questionContent = await page.evaluate(({ questionContentSel }) => {
         const content = document.querySelector(questionContentSel)
         if (content) return content.innerHTML
