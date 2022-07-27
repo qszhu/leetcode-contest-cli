@@ -21,7 +21,6 @@ export default class Client {
 
   private getPptrOpts(opts: any) {
     return Object.assign({
-      executablePath: this.config.chromePath,
       debug: this.config.verbose,
       proxy: this.config.proxy
     }, opts)

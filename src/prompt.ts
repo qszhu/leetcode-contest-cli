@@ -3,14 +3,6 @@ import prompts from 'prompts'
 import Config from './lib/config'
 import ProjectFactory from './project/factory'
 
-export async function promptChromePath() {
-  const initial = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-  const questions: any[] = [
-    { type: 'text', name: 'chromePath', message: 'Google Chrome executable path:', initial },
-  ]
-  return prompts(questions)
-}
-
 export async function promptSites() {
   const questions: any[] = [
     {

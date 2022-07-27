@@ -1,21 +1,19 @@
 #!/usr/bin/env node
-import fs from 'fs'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
-import Config, { KEY_CHROME_PATH, KEY_CONTEST_ID, KEY_LANG, KEY_PROBLEMS, KEY_PROBLEM_ID, KEY_SITE } from './lib/config'
+import Config, { KEY_CONTEST_ID, KEY_LANG, KEY_PROBLEMS, KEY_PROBLEM_ID, KEY_SITE } from './lib/config'
 import CookieJar, { KEY_COOKIES } from './lib/CookieJar'
 import Client from './lib/lcClient'
 import { extractContestId, runCmd, writeStringToFile } from './lib/utils'
 import ProjectFactory from './project/factory'
-import { promptChromePath, promptContestUrl, promptLanguages, promptProblems, promptSites } from './prompt'
+import { promptContestUrl, promptLanguages, promptProblems, promptSites } from './prompt'
 
 const config = Config.load()
 const jar = CookieJar.load()
 const client = new Client(config, jar)
 
 const promptFunctions: Record<string, () => Promise<boolean>> = {
-  [KEY_CHROME_PATH]: ensureChromePath,
   [KEY_SITE]: ensureSite,
   [KEY_COOKIES]: ensureCookies,
   [KEY_CONTEST_ID]: ensureContestId,
@@ -33,19 +31,6 @@ async function ensureConfig(...keys: string[]) {
     }
     else throw new Error(`Unknown key: ${key}`)
   }
-  return true
-}
-
-async function ensureChromePath() {
-  if (config.chromePath) return true
-
-  const resp = await promptChromePath()
-  if (!resp.chromePath || !fs.existsSync(resp.chromePath)) {
-    console.log('Invalid path.')
-    return false
-  }
-
-  config.chromePath = resp.chromePath
   return true
 }
 
@@ -185,7 +170,7 @@ async function main() {
 
   const [cmd] = argv._
 
-  if (!(await ensureConfig(KEY_CHROME_PATH, KEY_SITE, KEY_COOKIES))) return
+  if (!(await ensureConfig(KEY_SITE, KEY_COOKIES))) return
 
   if (!cmd) {
     await createAll()

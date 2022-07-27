@@ -25,7 +25,6 @@ export type PptrOptions = {
   headless?: boolean
   keepOpen?: boolean
   slowMo?: number
-  executablePath?: string
   devtools?: boolean
   debug?: boolean
   cookies?: any[]

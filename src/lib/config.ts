@@ -2,7 +2,6 @@ import fs from 'fs'
 import path from 'path'
 
 const CONFIG_FN = '.lccrc'
-export const KEY_CHROME_PATH = 'chromePath'
 export const KEY_CONTEST_ID = 'contestId'
 export const KEY_PROBLEM_ID = 'problemId'
 export const KEY_PROBLEMS = 'problems'
@@ -29,15 +28,6 @@ export default class Config {
 
   private save() {
     fs.writeFileSync(getConfigFn(), JSON.stringify(this.data, null, 2))
-  }
-
-  get chromePath() {
-    return this.data[KEY_CHROME_PATH]
-  }
-
-  set chromePath(path: string) {
-    this.data[KEY_CHROME_PATH] = path
-    this.save()
   }
 
   get contestId() {

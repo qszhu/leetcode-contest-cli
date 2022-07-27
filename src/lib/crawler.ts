@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer-core'
+import puppeteer from 'puppeteer'
 import { PptrOptions } from '../types'
 
 const WIDTH = 1024, HEIGHT = 768
@@ -29,7 +29,6 @@ export async function newPage(
     args: [`--window-size=${WIDTH},${HEIGHT}`],
     devtools: opts.devtools
   }
-  if (opts.executablePath) launchOpts.executablePath = opts.executablePath
   if (opts.proxy) launchOpts.args.push(`--proxy-server=${opts.proxy}`)
 
   const browser = await puppeteer.launch(launchOpts)
