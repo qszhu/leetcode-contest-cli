@@ -149,7 +149,6 @@ export default class Client {
     const res: any = await this.waitResult(interpret_id, contestId, problemId)
 
     const { status_msg, code_answer, code_output, full_compile_error, full_runtime_error } = res
-    console.log(status_msg)
 
     const codeOutput = code_output.join('\n')
     if (codeOutput) {
