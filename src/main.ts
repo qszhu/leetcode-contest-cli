@@ -171,6 +171,7 @@ async function main() {
   const [cmd] = argv._
 
   if (!(await ensureConfig(KEY_SITE, KEY_COOKIES))) return
+  console.log('Current user:', jar.userName)
 
   if (!cmd) {
     await createAll()

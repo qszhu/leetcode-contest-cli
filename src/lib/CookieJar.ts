@@ -49,4 +49,11 @@ export default class CookieJar {
       .filter((cookie: any) => cookie.name === 'csrftoken')
     if (tokens.length > 0) return tokens[0].value
   }
+
+  get userName() {
+    const cookies = this.data[KEY_COOKIES]
+    for (const cookie of (this.data[KEY_COOKIES] || [])) {
+      if (cookie.name.endsWith('_gr_cs1')) return cookie.value
+    }
+  }
 }
