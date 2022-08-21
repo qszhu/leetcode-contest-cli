@@ -7,7 +7,7 @@ import { Problem } from "../types"
 import Config from "./config"
 import CookieJar from "./CookieJar"
 import { newPage } from "./crawler"
-import { extractOutput, sleep } from "./utils"
+import { extractOutput, runCmd, sleep, writeStringToFile } from "./utils"
 
 async function request(opts: any, debug = false) {
   if (debug) console.log(opts)
@@ -175,10 +175,11 @@ export default class Client {
       return
     }
 
-    console.log('expected:')
-    console.log(output)
-    console.log('got:')
-    console.log(actualOutput)
+    const expectedFn = 'expected'
+    const actualFn = 'actual'
+    writeStringToFile(expectedFn, output)
+    writeStringToFile(actualFn, actualOutput)
+    await runCmd(`code --diff ${expectedFn} ${actualFn}`)
   }
 
   private async waitResult(submissionId: string, contestId: string, problemId: string) {
