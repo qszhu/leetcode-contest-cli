@@ -244,7 +244,7 @@ export default class Client {
 
     if (full_runtime_error) {
       console.log(full_runtime_error.split('\n').reverse().join('\n'))
-      return
+      // return
     }
 
     if (status_msg === 'Accepted') {
