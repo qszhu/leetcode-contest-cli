@@ -55,7 +55,7 @@ export function extractOutput(htmlContent: string, cn: boolean) {
   const output = cn ? '输出[：:]' : 'Output:'
   return textContent.split('\n')
     .map(line => {
-      const m = line.match(new RegExp(`^${output}(.+)$`))
+      const m = line.match(new RegExp(`${output}(.+)$`))
       return m ? m[1].trim() : ''
     })
     .filter(m => m.length > 0)

@@ -116,6 +116,38 @@ describe('utils', () => {
     assert.equal(outputs, '1\n0\n2')
   })
 
+  it('should extract output from Chinese problem with block quotes', async () => {
+    const htmlContent = `
+<div class="question-content default-content"><p>网页布局中有一种瀑布流布局方式，表现为参差不齐的多栏布局。随着页面滚动条向下，还会不断加载数据块并附加至当前尾部。页面在加载时遵循以下规则：</p>
+<ul>
+<li>当有数据块需要加载时，优先加载在高度最短的那一列；</li>
+<li>若存在多个高度相同且最短的情况，则加载在其中最靠左的那一列</li>
+</ul>
+<p>已知当前网页共分割为 <code>num</code> 列，该网页有若干数据块可以加载，<code>block[i]</code> 表示第 <code>i</code> 个数据块的高度。当页面按顺序加载完所有的数据块后，请返回高度最大的那一列的高度。</p>
+<p><strong>示例 1：</strong></p>
+<blockquote>
+<p>输入：<code>num = 3, block = [5,9,8,6]</code></p>
+<p>输出：<code>11</code></p>
+<p>解释：如下图所示，返回 11<br>
+<img src="https://pic.leetcode-cn.com/1646291905-AqDTIl-image.png" alt="image.png" width="300px"></p>
+</blockquote>
+<p><strong>示例 2：</strong></p>
+<blockquote>
+<p>输入：<code>num = 2, block = [9,1,1,1,1,1]</code></p>
+<p>输出：<code>9</code></p>
+</blockquote>
+<p><strong>提示：</strong></p>
+<ul>
+<li><code>0 &lt; num &lt;= 100</code></li>
+<li><code>0 &lt; block.length &lt;= 10^4</code></li>
+<li><code>0 &lt; block[i] &lt;= 10^3</code></li>
+</ul>
+</div>
+`
+    const outputs = extractOutput(htmlContent, true)
+    assert.equal(outputs, '11\n9')
+  })
+
   it('should extract output from English problems', async () => {
     const htmlContent = `
 <p>You are given the strings <code>key</code> and <code>message</code>, which represent a cipher key and a secret message, respectively. The steps to decode <code>message</code> are as follows:</p>
