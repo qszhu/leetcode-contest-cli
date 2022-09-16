@@ -26,9 +26,14 @@ Allow running scripts
 set-ExecutionPolicy RemoteSigned
 ```
 
-## Install/Upgrade
+## Install
 ```bash
 $ npm i -g leetcode-contest-cli
+```
+
+## Upgrade
+```bash
+$ npm update -g leetcode-contest-cli
 ```
 
 ## First run

@@ -164,7 +164,10 @@ async function initCwd() {
 }
 
 async function main() {
-  const argv = await yargs(hideBin(process.argv)).version().argv
+  const argv = await yargs(hideBin(process.argv))
+    .version()
+    .epilog('To upgrade, run: npm update -g leetcode-contest-cli')
+    .argv
 
   config.verbose = argv.v ? true : false
 
