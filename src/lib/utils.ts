@@ -48,16 +48,40 @@ export function extractContestId(url: string) {
   if (m) return m[1]
 }
 
+function trimStart(s: string, pat: RegExp): string {
+  const m = s.match(pat)
+  if (!m) return s
+  return s.substring(m.index! + m[0].length)
+}
+
+const trimQuote = (s: string): string => trimStart(s, /> /).trim()
+
 export function extractOutput(htmlContent: string, cn: boolean) {
   const textContent = convert(htmlContent, {
     wordwrap: 100
   })
-  const output = cn ? '输出[：:]' : 'Output:'
-  return textContent.split('\n')
-    .map(line => {
-      const m = line.match(new RegExp(`${output}(.+)$`))
-      return m ? m[1].trim() : ''
-    })
-    .filter(m => m.length > 0)
-    .join('\n')
+
+  const output = cn ? /^(> )?输出[：:]/ : /^(> )?Output:/
+  const isOutputStart = (line: string) => output.test(line)
+
+  const explain = cn ? /^(> )?解释[：:]/ : /^(> )?Explanation:/
+  const isOutputEnd = (line: string) => trimQuote(line).length === 0 || explain.test(line)
+
+  const outputs: string[][] = []
+  const lines = textContent.split('\n')
+  let caseOutput: string[] = []
+  let inCase = false
+  for (const line of lines) {
+    if (isOutputStart(line)) {
+      const text = trimStart(line, output).trim()
+      if (text.length > 0) caseOutput.push(text)
+      inCase = true
+    } else if (isOutputEnd(line)) {
+      if (caseOutput.length > 0) outputs.push(caseOutput)
+      caseOutput = []
+      inCase = false
+    } else if (inCase) caseOutput.push(trimQuote(line))
+  }
+  if (caseOutput.length > 0) outputs.push(caseOutput)
+  return outputs.map(caseOutput => caseOutput.join('\n')).join('\n')
 }

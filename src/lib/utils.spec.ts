@@ -118,7 +118,7 @@ describe('utils', () => {
 
   it('should extract output from Chinese problem with block quotes', async () => {
     const htmlContent = `
-<div class="question-content default-content"><p>网页布局中有一种瀑布流布局方式，表现为参差不齐的多栏布局。随着页面滚动条向下，还会不断加载数据块并附加至当前尾部。页面在加载时遵循以下规则：</p>
+<p>网页布局中有一种瀑布流布局方式，表现为参差不齐的多栏布局。随着页面滚动条向下，还会不断加载数据块并附加至当前尾部。页面在加载时遵循以下规则：</p>
 <ul>
 <li>当有数据块需要加载时，优先加载在高度最短的那一列；</li>
 <li>若存在多个高度相同且最短的情况，则加载在其中最靠左的那一列</li>
@@ -142,10 +142,49 @@ describe('utils', () => {
 <li><code>0 &lt; block.length &lt;= 10^4</code></li>
 <li><code>0 &lt; block[i] &lt;= 10^3</code></li>
 </ul>
-</div>
 `
     const outputs = extractOutput(htmlContent, true)
     assert.equal(outputs, '11\n9')
+  })
+
+  it('should extract output from Chinese problem with block quotes & new line', async () => {
+    const htmlContent = `
+<p>工程部在一条坐标轴上设立了若干补给站，<code>station[i]</code> 表示编号为 <code>i</code> 的补给站的坐标。</p>
+<p>现在有一些正在执行任务的勘探队需要进行补给，<code>pos[i]</code> 表示第 <code>i</code> 个勘探队当前所在位置的坐标。勘探队将优先选择<strong>当前距离最近</strong>的补给站进行补给。若两座补给站距离相同，则选择坐标更小的那一个。</p>
+<p><strong>请按顺序</strong>返回这些勘探队所选择的补给站编号。</p>
+<p><strong>注意：</strong></p>
+<ul>
+<li><code>station</code> 中的元素严格递增，即 <code>station[i] &lt; station[i+1]</code></li>
+</ul>
+<p><strong>示例 1：</strong></p>
+<blockquote>
+<p>输入：<br>
+<code>station = [2,7,8,10]</code><br>
+<code>pos = [4,9]</code><br>
+输出：<br>
+<code>[0,2]</code><br>
+解释：<br>
+坐标 <code>4</code> 的勘探队与坐标为 <code>2</code> 和 <code>7</code> 的补给站距离分别为 <code>2</code> 和 <code>3</code>， 选择坐标为 <code>2</code>的补给站<br>
+坐标 <code>9</code> 的勘探队与坐标为 <code>8</code> 和 <code>10</code> 的补给站的距离均为 <code>1</code>， 选择坐标更小为 <code>8</code> 的补给站<br>
+返回编号为 <code>[0,2]</code> 的补给站。</p>
+</blockquote>
+<p><strong>示例 2：</strong></p>
+<blockquote>
+<p>输入：<br>
+<code>station = [2,5,8,14,17]</code><br>
+<code>pos = [1,14,11,2]</code><br>
+输出：<br>
+<code>[0,3,2,0]</code></p>
+</blockquote>
+<p><strong>提示：</strong></p>
+<ul>
+<li><code>1 &lt;= pos.length,station.length &lt;= 10^4</code></li>
+<li><code>1 &lt;= pos[i] &lt;= 10^6</code></li>
+<li><code>1 &lt;= station[i] &lt; station[i+1] &lt;= 10^6</code></li>
+</ul>
+`
+    const outputs = extractOutput(htmlContent, true)
+    assert.equal(outputs, '[0,2]\n[0,3,2,0]')
   })
 
   it('should extract output from English problems', async () => {
