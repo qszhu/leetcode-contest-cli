@@ -1,7 +1,7 @@
 import fs from 'fs'
 
 import Project from '.'
-import { ensureFnDir } from '../lib/utils'
+import { ensureFnDir, readStringFromFile } from '../lib/utils'
 import { Language, Problem } from '../types'
 import BaseProject from './BaseProject'
 
@@ -11,7 +11,9 @@ export default class Python extends BaseProject implements Project {
   }
 
   protected getCodeTemplate(problem: Problem): string {
-    return `${problem.templates['python3']}`
+    const code =  `${problem.templates['python3']}`
+    const tmpl = readStringFromFile('python.tmpl.py')
+    return tmpl.replace('${code}', code)
   }
 
   protected getBuiltBaseFn(): string {

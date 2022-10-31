@@ -161,6 +161,12 @@ async function initCwd() {
 .lccrc
 .jar
 `)
+  writeStringToFile('python.tmpl.py', `
+from typing import List
+
+\${code}
+
+`)
 }
 
 async function main() {

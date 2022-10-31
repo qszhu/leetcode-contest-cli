@@ -22,6 +22,10 @@ export function writeBinaryToFile(fn: string, data: Buffer) {
   fs.writeFileSync(fn, data)
 }
 
+export function readStringFromFile(fn: string) {
+  return fs.readFileSync(fn, 'utf-8')
+}
+
 export function linkFile(from: string, to: string) {
   if (fs.existsSync(from)) fs.unlinkSync(from)
   fs.symlinkSync(to, from)
