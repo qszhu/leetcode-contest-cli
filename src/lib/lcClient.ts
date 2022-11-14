@@ -251,7 +251,7 @@ export default class Client {
       const { status_runtime, status_memory } = res
       console.log('runtime:', status_runtime)
       console.log('memory:', status_memory)
-      return
+      return true
     }
 
     const { code_output, last_testcase, expected_output, total_correct, total_testcases } = res

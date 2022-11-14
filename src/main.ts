@@ -2,12 +2,12 @@
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
-import Config, { KEY_CONTEST_ID, KEY_LANG, KEY_PROBLEMS, KEY_PROBLEM_ID, KEY_SITE } from './lib/config'
+import Config, { KEY_CONTEST_ID, KEY_LANG, KEY_PROBLEMS, KEY_PROBLEM_ID, KEY_SITE, KEY_START_PROBLEM } from './lib/config'
 import CookieJar, { KEY_COOKIES } from './lib/CookieJar'
 import Client from './lib/lcClient'
 import { extractContestId, runCmd, writeStringToFile } from './lib/utils'
 import ProjectFactory from './project/factory'
-import { promptContestUrl, promptLanguages, promptProblems, promptSites } from './prompt'
+import { promptContestUrl, promptLanguages, promptProblems, promptSites, promptStartProblem } from './prompt'
 
 const config = Config.load()
 const jar = CookieJar.load()
@@ -19,6 +19,7 @@ const promptFunctions: Record<string, () => Promise<boolean>> = {
   [KEY_CONTEST_ID]: ensureContestId,
   [KEY_PROBLEMS]: ensureProblems,
   [KEY_PROBLEM_ID]: ensureProblemId,
+  [KEY_START_PROBLEM]: ensureStartProblem,
   [KEY_LANG]: ensureLanguage,
 }
 
@@ -75,6 +76,12 @@ async function ensureProblemId() {
   return await chooseProblem()
 }
 
+async function ensureStartProblem() {
+  if (config.startProblem) return true
+
+  return await chooseStartProblem()
+}
+
 async function ensureLanguage() {
   if (config.language) return true
 
@@ -102,14 +109,35 @@ async function chooseLanguage() {
   return true
 }
 
+async function chooseStartProblem() {
+  const resp = await promptStartProblem()
+  if (!resp.startProblem) return false
+
+  config.startProblem = resp.startProblem
+  return true
+}
+
 async function chooseProblem() {
-  if (!(await ensureConfig(KEY_LANG, KEY_CONTEST_ID, KEY_PROBLEMS))) return false
+  if (!(await ensureConfig(KEY_PROBLEMS))) return false
 
   const resp = await promptProblems(config)
   if (!resp.problemId) return false
 
-  config.problemId = resp.problemId
+  return await openProblem(resp.problemId)
+}
 
+async function nextProblem() {
+  if (!(await ensureConfig(KEY_PROBLEMS))) return false
+
+  const problems = config.problems
+  const curIdx = problems.findIndex((p: any) => p.problemId === config.problemId)
+  return await openProblem(problems[(curIdx + 1) % problems.length].problemId)
+}
+
+async function openProblem(problemId: string) {
+  if (!(await ensureConfig(KEY_LANG, KEY_CONTEST_ID))) return false
+
+  config.problemId = problemId
   const proj = await createProject(config.language, config.contestId, config.problemId)
   await runCmd(`code ${proj.getScreenshotFn()}`)
   await runCmd(`code ${proj.getSourceFn()}`)
@@ -126,13 +154,15 @@ async function createProject(lang: string, contestId: string, problemId: string)
 }
 
 async function createAll() {
-  if (!(await ensureConfig(KEY_LANG, KEY_CONTEST_ID, KEY_PROBLEMS))) return false
+  if (!(await ensureConfig(KEY_LANG, KEY_CONTEST_ID, KEY_PROBLEMS, KEY_START_PROBLEM))) return false
 
   for (const { title, problemId } of config.problems) {
     console.log(`Creating project for ${title}...`)
     config.problemId = problemId
     await createProject(config.language, config.contestId, config.problemId)
   }
+  const n = config.problems.length
+  config.problemId = config.problems[(config.startProblem - 2 + n) % n].problemId
 }
 
 async function buildSolution() {
@@ -153,7 +183,7 @@ async function submitSolution() {
   if (!(await ensureConfig(KEY_LANG, KEY_CONTEST_ID, KEY_PROBLEM_ID))) return false
 
   const proj = ProjectFactory.getProject(config.language, config.contestId, config.problemId)
-  await client.submitSolution(proj, config.contestId, config.problemId)
+  return await client.submitSolution(proj, config.contestId, config.problemId)
 }
 
 async function initCwd() {
@@ -184,24 +214,27 @@ async function main() {
 
   if (!cmd) {
     await createAll()
-    await chooseProblem()
+    await nextProblem()
   } else if (cmd.toString().startsWith('http')) {
     config.contestId = extractContestId(cmd.toString())
     config.problems = undefined
     await createAll()
-    await chooseProblem()
+    await nextProblem()
   } else if (cmd === 'test') {
     await buildSolution()
     await testSolution()
   } else if (cmd === 'submit') {
     await buildSolution()
-    await submitSolution()
+    const res = await submitSolution()
+    if (res) await nextProblem()
   } else if (cmd === 'login') {
     await client.login()
   } else if (cmd === 'init') {
     await initCwd()
   } else if (cmd === 'lang') {
     await chooseLanguage()
+  } else if (cmd === 'next') {
+    await nextProblem()
   } else if (cmd === 'list') {
     await chooseProblem()
   } else console.error(`Unknown command: ${cmd}`)

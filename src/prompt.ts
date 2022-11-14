@@ -38,6 +38,18 @@ export async function promptLanguages() {
   return prompts(questions)
 }
 
+export async function promptStartProblem() {
+  const questions: any[] = [
+    {
+      type: 'number',
+      name: 'startProblem',
+      message: 'Choose start problem (1-4)',
+      validate: (value: number) => 1 <= value && value <= 4 ? true : 'Start problem should between 1 and 4'
+    }
+  ]
+  return prompts(questions)
+}
+
 export async function promptProblems(config: Config) {
   const questions: any[] = [
     {
