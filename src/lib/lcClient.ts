@@ -1,4 +1,5 @@
-import axios from "axios"
+import axios from 'axios'
+import chalk from 'chalk'
 import fs from 'fs'
 import HttpsProxyAgent from 'https-proxy-agent'
 
@@ -237,24 +238,22 @@ export default class Client {
     if (this.config.proxy) this.setProxy(opts)
 
     const { submission_id } = await request(opts, this.config.verbose)
-    const res: any = await this.waitResult(submission_id, contestId, problemId)
+    const resp: any = await this.waitResult(submission_id, contestId, problemId)
 
-    const { status_msg, full_runtime_error } = res
-    console.log(status_msg)
-
+    const { status_msg, full_runtime_error } = resp
     if (full_runtime_error) {
       console.log(full_runtime_error.split('\n').reverse().join('\n'))
-      // return
     }
 
     if (status_msg === 'Accepted') {
-      const { status_runtime, status_memory } = res
+      console.log(chalk.greenBright(status_msg))
+      const { status_runtime, status_memory } = resp
       console.log('runtime:', status_runtime)
       console.log('memory:', status_memory)
       return true
     }
 
-    const { code_output, last_testcase, expected_output, total_correct, total_testcases } = res
+    const { code_output, last_testcase, expected_output, total_correct, total_testcases } = resp
     console.log(`${total_correct}/${total_testcases}`)
     console.log('Last testcase:')
     console.log(last_testcase)
@@ -262,6 +261,16 @@ export default class Client {
     console.log(expected_output)
     console.log('Actual:')
     console.log(code_output)
+
+    if (status_msg === 'Wrong Answer') {
+      console.log(chalk.redBright(status_msg))
+    } else if (status_msg === 'Runtime Error') {
+      console.log(chalk.yellowBright(status_msg))
+    } else if (status_msg === 'Time Limit Exceeded') {
+      console.log(chalk.yellow(status_msg))
+    } else {
+      console.log(status_msg)
+    }
   }
 
   async getContestInfo(contestId: string) {

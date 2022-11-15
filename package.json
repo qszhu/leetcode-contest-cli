@@ -1,6 +1,6 @@
 {
   "name": "leetcode-contest-cli",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "homepage": "https://github.com/qszhu/leetcode-contest-cli#readme",
   "engines": {
     "node": ">=14"
@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "axios": "^0.27.2",
+    "chalk": "^4.1.2",
     "html-to-text": "^8.2.0",
     "prompts": "^2.4.2",
     "puppeteer": "^15.5.0",
