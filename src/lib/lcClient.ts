@@ -263,4 +263,38 @@ export default class Client {
     console.log('Actual:')
     console.log(code_output)
   }
+
+  async getContestInfo(contestId: string) {
+    const url = `${this.config.site}/contest/api/info/${contestId}/`
+    const referer = `${this.config.site}/contest/${contestId}/`
+    const cookies = this.cookieJar.cookiesHeader
+    const opts: any = {
+      url,
+      method: 'get',
+      headers: {
+        Cookie: cookies,
+        Referer: referer,
+        'x-csrftoken': this.cookieJar.csrfToken,
+      },
+    }
+    if (this.config.proxy) this.setProxy(opts)
+    return await request(opts, this.config.verbose)
+  }
+
+  async getServerTime() {
+    const url = `${this.config.site}/timestamp/`
+    const referer = `${this.config.site}/contest/`
+    const cookies = this.cookieJar.cookiesHeader
+    const opts: any = {
+      url,
+      method: 'get',
+      headers: {
+        Cookie: cookies,
+        Referer: referer,
+        'x-csrftoken': this.cookieJar.csrfToken,
+      },
+    }
+    if (this.config.proxy) this.setProxy(opts)
+    return await request(opts, this.config.verbose)
+  }
 }

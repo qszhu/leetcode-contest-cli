@@ -1,11 +1,12 @@
 #!/usr/bin/env node
+import { performance } from 'perf_hooks'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
 import Config, { KEY_CONTEST_ID, KEY_LANG, KEY_PROBLEMS, KEY_PROBLEM_ID, KEY_SITE, KEY_START_PROBLEM } from './lib/config'
 import CookieJar, { KEY_COOKIES } from './lib/CookieJar'
 import Client from './lib/lcClient'
-import { extractContestId, runCmd, writeStringToFile } from './lib/utils'
+import { extractContestId, runCmd, sleep, writeStringToFile } from './lib/utils'
 import ProjectFactory from './project/factory'
 import { promptContestUrl, promptLanguages, promptProblems, promptSites, promptStartProblem } from './prompt'
 
@@ -199,6 +200,45 @@ from typing import List
 `)
 }
 
+async function countDownToContest(contestId: string) {
+  const { contest: contestInfo } = await client.getContestInfo(contestId)
+  console.log(contestInfo.title)
+  console.log(`开始时间：${new Date(contestInfo.start_time * 1000)}`)
+
+  const { timestamp: serverTime } = await client.getServerTime()
+  const delta = (contestInfo.start_time - serverTime) * 1000
+
+  if (delta > 0) await countDown(delta)
+}
+
+function printRemainTime(millis: number) {
+  let seconds = Math.floor(millis / 1000)
+  const days = Math.floor(seconds / 60 / 60 / 24)
+  seconds -= days * 60 * 60 * 24
+  const hours = Math.floor(seconds / 60 / 60)
+  seconds -= hours * 60 * 60
+  const minutes = Math.floor(seconds / 60)
+  seconds -= minutes * 60
+  const text = `距离开始还有：${days}天 ${hours}小时 ${minutes}分 ${seconds}秒`
+
+  process.stdout.clearLine(0)
+  process.stdout.cursorTo(0)
+  process.stdout.write(text)
+}
+
+async function countDown(remainMillis: number) {
+  const start = performance.now()
+  return new Promise(async (resolve, reject) => {
+    let elapsed = performance.now() - start
+    while (elapsed < remainMillis) {
+      printRemainTime(remainMillis - elapsed)
+      await sleep(50)
+      elapsed = performance.now() - start
+    }
+    resolve(0)
+  })
+}
+
 async function main() {
   const argv = await yargs(hideBin(process.argv))
     .version()
@@ -218,6 +258,7 @@ async function main() {
   } else if (cmd.toString().startsWith('http')) {
     config.contestId = extractContestId(cmd.toString())
     config.problems = undefined
+    await countDownToContest(config.contestId)
     await createAll()
     await nextProblem()
   } else if (cmd === 'test') {
