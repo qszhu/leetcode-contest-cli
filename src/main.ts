@@ -259,7 +259,7 @@ async function main() {
     config.contestId = extractContestId(cmd.toString())
     config.problems = undefined
     await countDownToContest(config.contestId)
-    await createAll()
+    // await createAll()
     await nextProblem()
   } else if (cmd === 'test') {
     await buildSolution()
