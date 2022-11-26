@@ -275,11 +275,28 @@ export default class Client {
 
   async getContestInfo(contestId: string) {
     const url = `${this.config.site}/contest/api/info/${contestId}/`
-    const referer = `${this.config.site}/contest/${contestId}/`
+    const referer = `${this.config.site}/contest/${contestId}`
     const cookies = this.cookieJar.cookiesHeader
     const opts: any = {
       url,
       method: 'get',
+      headers: {
+        Cookie: cookies,
+        Referer: referer,
+        'x-csrftoken': this.cookieJar.csrfToken,
+      },
+    }
+    if (this.config.proxy) this.setProxy(opts)
+    return await request(opts, this.config.verbose)
+  }
+
+  async registerForContest(contestId: string) {
+    const url = `${this.config.site}/contest/api/${contestId}/register`
+    const referer = `${this.config.site}/contest/${contestId}/`
+    const cookies = this.cookieJar.cookiesHeader
+    const opts: any = {
+      url,
+      method: 'post',
       headers: {
         Cookie: cookies,
         Referer: referer,
@@ -302,6 +319,38 @@ export default class Client {
         Referer: referer,
         'x-csrftoken': this.cookieJar.csrfToken,
       },
+    }
+    if (this.config.proxy) this.setProxy(opts)
+    return await request(opts, this.config.verbose)
+  }
+
+  async upcomingContest() {
+    const url = `${this.config.site}/graphql/`
+    const method = 'post'
+    const referer = `${this.config.site}/contest/`
+    const cookies = this.cookieJar.cookiesHeader
+    const headers = {
+      Cookie: cookies,
+      Referer: referer,
+      'x-csrftoken': this.cookieJar.csrfToken,
+    }
+    const data = {
+      operationName: null,
+      query: `{
+  contestUpcomingContests {
+    title
+    titleSlug
+    startTime
+  }
+}
+`,
+      variables: {}
+    }
+    const opts: any = {
+      url,
+      method,
+      headers,
+      data,
     }
     if (this.config.proxy) this.setProxy(opts)
     return await request(opts, this.config.verbose)

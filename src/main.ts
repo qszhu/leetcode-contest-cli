@@ -200,10 +200,17 @@ from typing import List
 `)
 }
 
+async function getNextContest(): Promise<any> {
+  const { data: { contestUpcomingContests: contests } } = await client.upcomingContest()
+  return contests.sort((a: any, b: any) => a.startTime - b.startTime)[0]
+}
+
 async function countDownToContest(contestId: string) {
   const { contest: contestInfo } = await client.getContestInfo(contestId)
   console.log(contestInfo.title)
   console.log(`开始时间：${new Date(contestInfo.start_time * 1000)}`)
+
+  await client.registerForContest(contestId)
 
   const { timestamp: serverTime } = await client.getServerTime()
   const delta = (contestInfo.start_time - serverTime) * 1000
@@ -253,13 +260,15 @@ async function main() {
   console.log('Current user:', jar.userName)
 
   if (!cmd) {
-    await createAll()
+    const nextContest = await getNextContest()
+    config.contestId = nextContest.titleSlug
+    config.problems = undefined
+    await countDownToContest(config.contestId)
     await nextProblem()
   } else if (cmd.toString().startsWith('http')) {
     config.contestId = extractContestId(cmd.toString())
     config.problems = undefined
     await countDownToContest(config.contestId)
-    // await createAll()
     await nextProblem()
   } else if (cmd === 'test') {
     await buildSolution()
