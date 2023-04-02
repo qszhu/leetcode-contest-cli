@@ -193,6 +193,10 @@ async function initCwd() {
 .jar
 `)
   writeStringToFile('python.tmpl.py', `
+"""
+\${problemDesc}
+"""
+
 from typing import List
 
 \${code}

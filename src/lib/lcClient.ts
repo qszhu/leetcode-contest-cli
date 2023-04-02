@@ -8,7 +8,7 @@ import { Problem } from "../types"
 import Config from "./config"
 import CookieJar from "./CookieJar"
 import { newPage } from "./crawler"
-import { extractOutput, runCmd, sleep, writeStringToFile } from "./utils"
+import { extractDescription, extractOutput, runCmd, sleep, writeStringToFile } from "./utils"
 
 async function request(opts: any, debug = false) {
   if (debug) console.log(opts)
@@ -98,6 +98,7 @@ export default class Client {
       codeDefinition,
     } = pageData
 
+    const description = extractDescription(questionContent)
     const output = extractOutput(questionContent, this.config.site.endsWith('.cn'))
     const templates = codeDefinition.reduce((acc: any, val: any) => {
       acc[val.value] = val.defaultCode
@@ -111,7 +112,8 @@ export default class Client {
       input,
       output,
       templates,
-      screenShot
+      screenShot,
+      description,
     }
   }
 

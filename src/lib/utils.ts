@@ -60,10 +60,14 @@ function trimStart(s: string, pat: RegExp): string {
 
 const trimQuote = (s: string): string => trimStart(s, /> /).trim()
 
-export function extractOutput(htmlContent: string, cn: boolean) {
-  const textContent = convert(htmlContent, {
+export function extractDescription(htmlContent: string): string {
+  return convert(htmlContent, {
     wordwrap: 100
   })
+}
+
+export function extractOutput(htmlContent: string, cn: boolean) {
+  const textContent = extractDescription(htmlContent)
 
   const output = cn ? /^(> )?输出[：:]/ : /^(> )?Output:/
   const isOutputStart = (line: string) => output.test(line)

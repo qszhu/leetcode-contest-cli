@@ -51,7 +51,6 @@ export default class CookieJar {
   }
 
   get userName() {
-    const cookies = this.data[KEY_COOKIES]
     for (const cookie of (this.data[KEY_COOKIES] || [])) {
       if (cookie.name.endsWith('_gr_cs1')) return cookie.value
     }

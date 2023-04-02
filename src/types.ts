@@ -19,6 +19,7 @@ export type Problem = {
   output: string
   templates: Record<string, string>
   screenShot: Buffer
+  description: string
 }
 
 export type PptrOptions = {

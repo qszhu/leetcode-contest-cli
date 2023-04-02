@@ -11,9 +11,11 @@ export default class Python extends BaseProject implements Project {
   }
 
   protected getCodeTemplate(problem: Problem): string {
-    const code =  `${problem.templates['python3']}`
+    const code = `${problem.templates['python3']}`
+    const problemDesc = problem.description
     const tmpl = readStringFromFile('python.tmpl.py')
     return tmpl.replace('${code}', code)
+      .replace('${problemDesc}', problemDesc)
   }
 
   protected getBuiltBaseFn(): string {
