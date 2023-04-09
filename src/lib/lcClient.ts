@@ -95,10 +95,12 @@ export default class Client {
     const {
       questionId: rawId,
       questionExampleTestcases: input,
+      questionSourceContent,
       codeDefinition,
     } = pageData
 
     const description = extractDescription(questionContent)
+    const sourceDescription = extractDescription(questionSourceContent)
     const output = extractOutput(questionContent, this.config.site.endsWith('.cn'))
     const templates = codeDefinition.reduce((acc: any, val: any) => {
       acc[val.value] = val.defaultCode
@@ -114,6 +116,7 @@ export default class Client {
       templates,
       screenShot,
       description,
+      sourceDescription,
     }
   }
 

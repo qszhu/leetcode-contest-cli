@@ -194,7 +194,7 @@ async function initCwd() {
 `)
   writeStringToFile('python.tmpl.py', `
 """
-\${problemDesc}
+\${problemDescEN}
 """
 
 from typing import List
